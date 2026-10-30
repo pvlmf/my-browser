@@ -13,12 +13,23 @@ if [[ ! -f "$BUILD_DIR/build.ninja" ]]; then
   exit 2
 fi
 
+# テスト専用のXDG設定ディレクトリを/tmpに作成
+TEST_XDG_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/epiphany-test-xdg.XXXXXX")"
+trap 'rm -rf -- "$TEST_XDG_ROOT"' EXIT
+
+mkdir -p \
+    "$TEST_XDG_ROOT/home" \
+    "$TEST_XDG_ROOT/config-dirs"
+
 mkdir -p "$(dirname -- "$LOG_FILE")"
 printf '[INFO] Running Meson tests in %s\n' "$BUILD_DIR"
 printf '[INFO] Test log: %s\n\n' "$LOG_FILE"
 
-if meson test -C "$BUILD_DIR" --print-errorlogs "$@" 2>&1 | tee "$LOG_FILE"; then
-  printf '\n[ OK ] Tests completed successfully\n'
+if env \
+    XDG_CONFIG_HOME="$TEST_XDG_ROOT/home" \
+    XDG_CONFIG_DIRS="$TEST_XDG_ROOT/config-dirs" \
+    meson test -C "$BUILD_DIR" --print-errorlogs "$@" 2>&1 | tee "$LOG_FILE"; then
+  printf '\n[ ok ] Tests completed successfully\n'
 else
   status=$?
   printf '\n========== TEST FAILURE SUMMARY ==========\n' >&2
