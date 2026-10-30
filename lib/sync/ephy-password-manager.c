@@ -395,7 +395,7 @@ ephy_password_manager_store_record (EphyPasswordManager *self,
   const char *username_field;
   const char *password_field;
   char *label;
-  gint64 modified;
+  gint64 modified = 0;
 
   g_assert (EPHY_IS_PASSWORD_MANAGER (self));
   g_assert (EPHY_IS_PASSWORD_RECORD (record));
@@ -407,7 +407,6 @@ ephy_password_manager_store_record (EphyPasswordManager *self,
   password = ephy_password_record_get_password (record);
   username_field = ephy_password_record_get_username_field (record);
   password_field = ephy_password_record_get_password_field (record);
-  //modified = ephy_synchronizable_get_server_time_modified (EPHY_SYNCHRONIZABLE (record));
 
   LOG ("Storing password record (%s, %s, %s, %s, %s, %s)",
        id, origin, target_origin, username, username_field, password_field);
@@ -860,9 +859,6 @@ ephy_password_manager_forget (EphyPasswordManager *self,
   task = g_task_new (self, cancellable, callback, user_data);
   g_task_set_source_tag (task, ephy_password_manager_forget);
 
-  /* synchronizable-deleted signal needs an EphySynchronizable object,
-  * therefore we need to obtain the password record first and then emit
-  * the signal before clearing the password from the secret schema. */
   ephy_password_manager_query (self, id,
                                NULL, NULL, NULL, NULL, NULL,
                                FALSE,
@@ -890,9 +886,6 @@ ephy_password_manager_forget_all (EphyPasswordManager *self)
 {
   g_assert (EPHY_IS_PASSWORD_MANAGER (self));
 
-  /* synchronizable-deleted signal needs an EphySynchronizable object, therefore
-   * we need to obtain the password records first and emit the signal for each
-   * one before clearing the secret schema. */
   ephy_password_manager_query (self, NULL, NULL, NULL, NULL, NULL, NULL, FALSE,
                                forget_all_cb, self);
 }
