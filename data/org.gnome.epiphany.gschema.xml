@@ -369,21 +369,6 @@
 		</key>
 	</schema>
 	<schema path="/org/gnome/epiphany/sync/" id="org.gnome.Epiphany.sync">
-		<key type="b" name="sync-bookmarks-enabled">
-			<default>false</default>
-			<summary>Enable bookmarks sync</summary>
-			<description>TRUE if bookmarks collection should be synced, FALSE otherwise.</description>
-		</key>
-		<key type="x" name="sync-bookmarks-time">
-			<default>0</default>
-			<summary>Bookmarks sync timestamp</summary>
-			<description>The timestamp at which last bookmarks sync was made.</description>
-		</key>
-		<key type="b" name="sync-bookmarks-initial">
-			<default>true</default>
-			<summary>Initial sync or normal sync</summary>
-			<description>TRUE if bookmarks collection needs to be synced for the first time, FALSE otherwise.</description>
-		</key>
 		<key type="b" name="sync-passwords-enabled">
 			<default>false</default>
 			<summary>Enable passwords sync</summary>
