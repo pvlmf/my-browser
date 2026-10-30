@@ -737,7 +737,7 @@ initialize_web_process_extensions (WebKitWebContext *web_context,
   webkit_web_context_set_web_process_extensions_directory (web_context, EPHY_WEB_PROCESS_EXTENSIONS_DIR);
 #endif
 
-  user_data = g_variant_new ("(smsbv)",
+  user_data = g_variant_new ("(smsb)",
                              priv->guid,
                              ephy_profile_dir_is_default () ? NULL : ephy_profile_dir (),
                              ephy_embed_shell_should_remember_passwords (shell));

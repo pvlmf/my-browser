@@ -41,7 +41,7 @@ webkit_web_process_extension_initialize_with_user_data (WebKitWebProcessExtensio
 
   ephy_debug_set_fatal_criticals ();
 
-  g_variant_get (user_data, "(&sm&sbv)", &guid, &profile_dir, &should_remember_passwords);
+  g_variant_get (user_data, "(&sm&sb)", &guid, &profile_dir, &should_remember_passwords);
 
   if (!ephy_file_helpers_init (profile_dir, 0, &error))
     g_warning ("Failed to initialize file helpers: %s", error->message);
