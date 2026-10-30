@@ -29,11 +29,8 @@
 #include "ephy-bookmarks-manager.h"
 #include "ephy-embed-shell.h"
 #include "ephy-embed.h"
-#include "ephy-history-manager.h"
-#include "ephy-open-tabs-manager.h"
 #include "ephy-password-manager.h"
 #include "ephy-session.h"
-#include "ephy-sync-service.h"
 #include "ephy-web-app-utils.h"
 #include "ephy-window.h"
 
@@ -96,12 +93,8 @@ EphyEmbed               *ephy_shell_new_tab_full            (EphyShell        *s
 EphySession             *ephy_shell_get_session             (EphyShell        *shell);
 GNetworkMonitor         *ephy_shell_get_net_monitor         (EphyShell        *shell);
 EphyBookmarksManager    *ephy_shell_get_bookmarks_manager   (EphyShell        *shell);
-EphyHistoryManager      *ephy_shell_get_history_manager     (EphyShell        *shell);
-EphyOpenTabsManager     *ephy_shell_get_open_tabs_manager   (EphyShell        *shell);
-EphySyncService         *ephy_shell_get_sync_service        (EphyShell        *shell);
 
 GtkWidget               *ephy_shell_get_history_dialog      (EphyShell        *shell);
-GtkWidget               *ephy_shell_get_firefox_sync_dialog (EphyShell        *shell);
 GObject                 *ephy_shell_get_prefs_dialog        (EphyShell        *shell);
 
 gboolean                 ephy_shell_get_checking_modified_forms     (EphyShell        *shell);

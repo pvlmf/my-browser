@@ -1079,20 +1079,7 @@ window_cmd_show_history (GSimpleAction *action,
   ephy_history_dialog_set_parent_window (dialog, user_data);
 }
 
-void
-window_cmd_show_firefox_sync (GSimpleAction *action,
-                              GVariant      *parameter,
-                              gpointer       user_data)
-{
-  GtkWidget *dialog;
 
-  dialog = ephy_shell_get_firefox_sync_dialog (ephy_shell_get_default ());
-
-  if (GTK_WINDOW (user_data) != gtk_window_get_transient_for (GTK_WINDOW (dialog)))
-    gtk_window_set_transient_for (GTK_WINDOW (dialog),
-                                  GTK_WINDOW (user_data));
-  gtk_window_present (GTK_WINDOW (dialog));
-}
 
 void
 window_cmd_show_clear_data_view (GSimpleAction *action,

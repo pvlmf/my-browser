@@ -32,7 +32,6 @@
 #include "ephy-embed-container.h"
 #include "ephy-embed-utils.h"
 #include "ephy-file-helpers.h"
-#include "ephy-firefox-sync-dialog.h"
 #include "ephy-header-bar.h"
 #include "ephy-history-dialog.h"
 #include "ephy-link.h"
@@ -42,7 +41,6 @@
 #include "ephy-prefs.h"
 #include "ephy-session.h"
 #include "ephy-settings.h"
-#include "ephy-sync-utils.h"
 #include "ephy-title-box.h"
 #include "ephy-title-widget.h"
 #include "ephy-type-builtins.h"
@@ -58,14 +56,10 @@
 struct _EphyShell {
   EphyEmbedShell parent_instance;
   EphySession *session;
-  EphySyncService *sync_service;
   GObject *lockdown;
   EphyBookmarksManager *bookmarks_manager;
-  EphyHistoryManager *history_manager;
-  EphyOpenTabsManager *open_tabs_manager;
   GNetworkMonitor *network_monitor;
   GtkWidget *history_dialog;
-  GtkWidget *firefox_sync_dialog;
   GObject *prefs_dialog;
   EphyShellStartupContext *local_startup_context;
   EphyShellStartupContext *remote_startup_context;
@@ -263,18 +257,6 @@ show_history (GSimpleAction *action,
 }
 
 static void
-show_firefox_sync (GSimpleAction *action,
-                   GVariant      *parameter,
-                   gpointer       user_data)
-{
-  GtkWindow *window;
-
-  window = gtk_application_get_active_window (GTK_APPLICATION (ephy_shell));
-
-  window_cmd_show_firefox_sync (NULL, NULL, EPHY_WINDOW (window));
-}
-
-static void
 show_clear_data_view (GSimpleAction *action,
                       GVariant      *parameter,
                       gpointer       user_data)
@@ -411,7 +393,6 @@ static GActionEntry app_entries[] = {
   { "import-passwords", import_passwords, NULL, NULL, NULL },
   { "export-passwords", export_passwords, NULL, NULL, NULL },
   { "history", show_history, NULL, NULL, NULL },
-  { "firefox-sync-dialog", show_firefox_sync, NULL, NULL, NULL },
   { "clear-data-view", show_clear_data_view, NULL, NULL, NULL},
   { "preferences", show_preferences, NULL, NULL, NULL },
   { "help", show_help, NULL, NULL, NULL },
@@ -436,74 +417,6 @@ static GActionEntry app_mode_app_entries[] = {
   { "run-in-background", NULL, NULL, "false", NULL},
   { "uninstall-web-app", uninstall_web_app },
 };
-
-#if 0
-static void
-register_synchronizable_managers (EphyShell       *shell,
-                                  EphySyncService *service)
-{
-  EphySynchronizableManager *manager;
-
-  g_assert (EPHY_IS_SYNC_SERVICE (service));
-  g_assert (EPHY_IS_SHELL (shell));
-
-  if (ephy_sync_utils_history_sync_is_enabled ()) {
-    manager = EPHY_SYNCHRONIZABLE_MANAGER (ephy_shell_get_history_manager (shell));
-    ephy_sync_service_register_manager (service, manager);
-  }
-
-/* https://gitlab.gnome.org/GNOME/epiphany/-/issues/1118#note_1731178
-  if (ephy_sync_utils_bookmarks_sync_is_enabled ()) {
-    manager = EPHY_SYNCHRONIZABLE_MANAGER (ephy_shell_get_bookmarks_manager (shell));
-    ephy_sync_service_register_manager (service, manager);
-  }
-*/
-
-  if (ephy_sync_utils_passwords_sync_is_enabled ()) {
-    manager = EPHY_SYNCHRONIZABLE_MANAGER (ephy_embed_shell_get_password_manager (EPHY_EMBED_SHELL (shell)));
-    ephy_sync_service_register_manager (service, manager);
-  }
-
-  if (ephy_sync_utils_open_tabs_sync_is_enabled ()) {
-    manager = EPHY_SYNCHRONIZABLE_MANAGER (ephy_shell_get_open_tabs_manager (shell));
-    ephy_sync_service_register_manager (service, manager);
-  }
-}
-
-static void
-start_sync_after_sign_in (EphySyncService *service)
-{
-  g_assert (EPHY_IS_SYNC_SERVICE (service));
-
-  ephy_sync_service_start_sync (service);
-}
-
-static void
-sync_secrets_store_finished_cb (EphySyncService *service,
-                                GError          *error,
-                                EphyShell       *shell)
-{
-  g_assert (EPHY_IS_SYNC_SERVICE (service));
-  g_assert (EPHY_IS_SHELL (shell));
-
-  if (!error) {
-    register_synchronizable_managers (shell, service);
-    /* Allow a 30 seconds window for the user to select their sync options. */
-    g_timeout_add_seconds_once (30, (GSourceOnceFunc)start_sync_after_sign_in, service);
-  }
-}
-
-static void
-sync_secrets_load_finished_cb (EphySyncService *service,
-                               EphyShell       *shell)
-{
-  g_assert (EPHY_IS_SYNC_SERVICE (service));
-  g_assert (EPHY_IS_SHELL (shell));
-
-  register_synchronizable_managers (shell, service);
-  ephy_sync_service_start_sync (service);
-}
-#endif
 
 static void
 set_accel_for_action (EphyShell   *shell,
@@ -602,9 +515,8 @@ ephy_shell_startup (GApplication *application)
                               "enabled",
                               G_BINDING_SYNC_CREATE);
 
-      if (mode == EPHY_EMBED_SHELL_MODE_BROWSER && ephy_sync_utils_user_is_signed_in ()) {
+      if (mode == EPHY_EMBED_SHELL_MODE_BROWSER) {
         /* Create the sync service. */
-        ephy_shell_get_sync_service (shell);
       }
     }
 
@@ -1001,10 +913,7 @@ ephy_shell_dispose (GObject *object)
   g_clear_object (&shell->lockdown);
   g_clear_object (&shell->prefs_dialog);
   g_clear_object (&shell->network_monitor);
-  g_clear_object (&shell->sync_service);
   g_clear_object (&shell->bookmarks_manager);
-  g_clear_object (&shell->history_manager);
-  g_clear_object (&shell->open_tabs_manager);
   g_clear_pointer (&shell->webapp, ephy_web_application_free);
 
   if (shell->open_notification_id) {
@@ -1218,39 +1127,6 @@ ephy_shell_get_session (EphyShell *shell)
 }
 
 /**
- * ephy_shell_get_sync_service:
- * @shell: the #EphyShell
- *
- * Returns the sync service.
- *
- * Return value: (transfer none): the global #EphySyncService
- **/
-EphySyncService *
-ephy_shell_get_sync_service (EphyShell *shell)
-{
-  g_assert (EPHY_IS_SHELL (shell));
-
-#if 0
-  /* Firefox Sync is disabled due to: https://gitlab.gnome.org/GNOME/epiphany/-/issues/2337 */
-
-  if (!shell->sync_service) {
-    shell->sync_service = ephy_sync_service_new (TRUE);
-
-    g_signal_connect_object (shell->sync_service,
-                             "sync-secrets-store-finished",
-                             G_CALLBACK (sync_secrets_store_finished_cb),
-                             shell, G_CONNECT_DEFAULT);
-    g_signal_connect_object (shell->sync_service,
-                             "sync-secrets-load-finished",
-                             G_CALLBACK (sync_secrets_load_finished_cb),
-                             shell, G_CONNECT_DEFAULT);
-  }
-#endif
-
-  return shell->sync_service;
-}
-
-/**
  * ephy_shell_get_bookmarks_manager:
  * @shell: the #EphyShell
  *
@@ -1267,41 +1143,6 @@ ephy_shell_get_bookmarks_manager (EphyShell *shell)
     shell->bookmarks_manager = ephy_bookmarks_manager_new ();
 
   return shell->bookmarks_manager;
-}
-/**
- * ephy_shell_get_history_manager:
- * @shell: the #EphyShell
- *
- * Returns the history manager.
- *
- * Return value: (transfer none): An #EphyHistoryManager.
- */
-EphyHistoryManager *
-ephy_shell_get_history_manager (EphyShell *shell)
-{
-  EphyEmbedShell *embed_shell;
-  EphyHistoryService *service;
-
-  g_assert (EPHY_IS_SHELL (shell));
-
-  if (!shell->history_manager) {
-    embed_shell = ephy_embed_shell_get_default ();
-    service = ephy_embed_shell_get_global_history_service (embed_shell);
-    shell->history_manager = ephy_history_manager_new (service);
-  }
-
-  return shell->history_manager;
-}
-
-EphyOpenTabsManager *
-ephy_shell_get_open_tabs_manager (EphyShell *shell)
-{
-  g_assert (EPHY_IS_SHELL (shell));
-
-  if (!shell->open_tabs_manager)
-    shell->open_tabs_manager = ephy_open_tabs_manager_new (EPHY_TABS_CATALOG (shell));
-
-  return shell->open_tabs_manager;
 }
 
 /**
@@ -1349,25 +1190,6 @@ ephy_shell_get_history_dialog (EphyShell *shell)
   }
 
   return shell->history_dialog;
-}
-
-/**
- * ephy_shell_get_firefox_sync_dialog:
- *
- * Return value: (transfer none):
- **/
-GtkWidget *
-ephy_shell_get_firefox_sync_dialog (EphyShell *shell)
-{
-  if (!shell->firefox_sync_dialog) {
-    shell->firefox_sync_dialog = ephy_firefox_sync_dialog_new ();
-    g_signal_connect (shell->firefox_sync_dialog,
-                      "destroy",
-                      G_CALLBACK (window_destroyed),
-                      &shell->firefox_sync_dialog);
-  }
-
-  return shell->firefox_sync_dialog;
 }
 
 /**
