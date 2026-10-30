@@ -173,11 +173,6 @@ static const char * const ephy_prefs_web_schema[] = {
 #define EPHY_PREFS_LOCKDOWN_QUIT              "disable-quit"
 #define EPHY_PREFS_LOCKDOWN_CONTEXT_MENU      "disable-context-menu"
 
-#define EPHY_PREFS_SYNC_SCHEMA            "org.gnome.Epiphany.sync"
-#define EPHY_PREFS_SYNC_PASSWORDS_ENABLED "sync-passwords-enabled"
-#define EPHY_PREFS_SYNC_PASSWORDS_TIME    "sync-passwords-time"
-#define EPHY_PREFS_SYNC_PASSWORDS_INITIAL "sync-passwords-initial"
-
 #define EPHY_PREFS_WEB_APP_SCHEMA                  "org.gnome.Epiphany.webapp"
 #define EPHY_PREFS_WEB_APP_ADDITIONAL_URLS         "additional-urls"
 #define EPHY_PREFS_WEB_APP_SHOW_NAVIGATION_BUTTONS "show-navigation-buttons"

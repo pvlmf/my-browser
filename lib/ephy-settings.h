@@ -32,7 +32,6 @@ G_BEGIN_DECLS
 #define EPHY_SETTINGS_WEB                        ephy_settings_get (EPHY_PREFS_WEB_SCHEMA)
 #define EPHY_SETTINGS_LOCKDOWN                   ephy_settings_get (EPHY_PREFS_LOCKDOWN_SCHEMA)
 #define EPHY_SETTINGS_STATE                      ephy_settings_get (EPHY_PREFS_STATE_SCHEMA)
-#define EPHY_SETTINGS_SYNC                       ephy_settings_get (EPHY_PREFS_SYNC_SCHEMA)
 #define EPHY_SETTINGS_WEB_APP                    ephy_settings_get (EPHY_PREFS_WEB_APP_SCHEMA)
 #define EPHY_SETTINGS_READER                     ephy_settings_get (EPHY_PREFS_READER_SCHEMA)
 

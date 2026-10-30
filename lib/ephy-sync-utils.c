@@ -28,7 +28,6 @@
 
 #include <glib/gi18n.h>
 
-#include "ephy-settings.h"
 #if defined(__linux__)
 #include <sys/random.h>
 #elif defined(__FreeBSD__) || defined(__OpenBSD__)
@@ -203,34 +202,4 @@ ephy_sync_utils_get_random_sync_id (void)
   g_free (bytes);
 
   return id;
-}
-
-gboolean
-ephy_sync_utils_passwords_sync_is_enabled (void)
-{
-  return g_settings_get_boolean (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_PASSWORDS_ENABLED);
-}
-
-void
-ephy_sync_utils_set_passwords_sync_time (gint64 time)
-{
-  g_settings_set_int64 (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_PASSWORDS_TIME, time);
-}
-
-gint64
-ephy_sync_utils_get_passwords_sync_time (void)
-{
-  return g_settings_get_int64 (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_PASSWORDS_TIME);
-}
-
-void
-ephy_sync_utils_set_passwords_sync_is_initial (gboolean is_initial)
-{
-  g_settings_set_boolean (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_PASSWORDS_INITIAL, is_initial);
-}
-
-gboolean
-ephy_sync_utils_get_passwords_sync_is_initial (void)
-{
-  return g_settings_get_boolean (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_PASSWORDS_INITIAL);
 }

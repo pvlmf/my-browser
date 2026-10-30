@@ -28,7 +28,6 @@
 #include <glib/gi18n.h>
 
 #include "ephy-debug.h"
-#include "ephy-settings.h"
 
 void
 ephy_password_request_data_free (EphyPasswordRequestData *request_data)
@@ -880,9 +879,6 @@ forget_all_cb (GList    **records,
   attributes = secret_attributes_build (EPHY_FORM_PASSWORD_SCHEMA, NULL);
   secret_password_clearv (EPHY_FORM_PASSWORD_SCHEMA, attributes, NULL,
                           (GAsyncReadyCallback)secret_password_clear_cb, NULL);
-
-  //for (GList *l = *records; l && l->data; l = l->next)
-    //g_signal_emit (self, signals[SYNCHRONIZABLE_DELETED], 0, l->data);
 
   ephy_password_manager_cache_clear (self);
 
