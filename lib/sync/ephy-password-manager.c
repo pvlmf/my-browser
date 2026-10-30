@@ -29,8 +29,6 @@
 
 #include "ephy-debug.h"
 #include "ephy-settings.h"
-#include "ephy-sync-utils.h"
-#include "ephy-synchronizable-manager.h"
 
 void
 ephy_password_request_data_free (EphyPasswordRequestData *request_data)
@@ -73,8 +71,6 @@ struct _EphyPasswordManager {
 };
 
 enum {
-  SYNCHRONIZABLE_DELETED,
-  SYNCHRONIZABLE_MODIFIED,
   LAST_SIGNAL
 };
 
@@ -85,11 +81,7 @@ static void ephy_password_manager_forget_record (EphyPasswordManager *self,
                                                  EphyPasswordRecord  *replacement,
                                                  GTask               *task);
 
-static void ephy_synchronizable_manager_iface_init (EphySynchronizableManagerInterface *iface);
-
-G_DEFINE_FINAL_TYPE_WITH_CODE (EphyPasswordManager, ephy_password_manager, G_TYPE_OBJECT,
-                               G_IMPLEMENT_INTERFACE (EPHY_TYPE_SYNCHRONIZABLE_MANAGER,
-                                                      ephy_synchronizable_manager_iface_init))
+G_DEFINE_FINAL_TYPE (EphyPasswordManager, ephy_password_manager, G_TYPE_OBJECT)
 
 typedef struct {
   EphyPasswordManagerQueryCallback callback;
@@ -111,15 +103,6 @@ typedef struct {
   EphyPasswordRecord *record;
   GTask *task;
 } ManageRecordAsyncData;
-
-typedef struct {
-  EphyPasswordManager *manager;
-  gboolean is_initial;
-  GList *remotes_deleted;
-  GList *remotes_updated;
-  EphySynchronizableManagerMergeCallback callback;
-  gpointer user_data;
-} MergePasswordsAsyncData;
 
 static QueryAsyncData *
 query_async_data_new (EphyPasswordManagerQueryCallback callback,
@@ -167,38 +150,6 @@ update_credentials_async_data_free (UpdateCredentialsAsyncData *data)
   g_object_unref (data->manager);
   g_clear_pointer (&data->username, g_free);
   g_clear_pointer (&data->password, g_free);
-  g_free (data);
-}
-
-static MergePasswordsAsyncData *
-merge_passwords_async_data_new (EphyPasswordManager                    *manager,
-                                gboolean                                is_initial,
-                                GList                                  *remotes_deleted,
-                                GList                                  *remotes_updated,
-                                EphySynchronizableManagerMergeCallback  callback,
-                                gpointer                                user_data)
-{
-  MergePasswordsAsyncData *data;
-
-  data = g_new0 (MergePasswordsAsyncData, 1);
-  data->manager = g_object_ref (manager);
-  data->is_initial = is_initial;
-  data->remotes_deleted = remotes_deleted;
-  data->remotes_updated = remotes_updated;
-  data->callback = callback;
-  data->user_data = user_data;
-
-  return data;
-}
-
-static void
-merge_passwords_async_data_free (MergePasswordsAsyncData *data)
-{
-  g_assert (data);
-
-  g_object_unref (data->manager);
-  g_list_free_full (data->remotes_deleted, g_object_unref);
-  g_list_free_full (data->remotes_updated, g_object_unref);
   g_free (data);
 }
 
@@ -374,12 +325,6 @@ ephy_password_manager_class_init (EphyPasswordManagerClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->dispose = ephy_password_manager_dispose;
-
-  signals[SYNCHRONIZABLE_DELETED] = g_signal_lookup ("synchronizable-deleted",
-                                                     EPHY_TYPE_SYNCHRONIZABLE_MANAGER);
-
-  signals[SYNCHRONIZABLE_MODIFIED] = g_signal_lookup ("synchronizable-modified",
-                                                      EPHY_TYPE_SYNCHRONIZABLE_MANAGER);
 }
 
 static void
@@ -463,7 +408,7 @@ ephy_password_manager_store_record (EphyPasswordManager *self,
   password = ephy_password_record_get_password (record);
   username_field = ephy_password_record_get_username_field (record);
   password_field = ephy_password_record_get_password_field (record);
-  modified = ephy_synchronizable_get_server_time_modified (EPHY_SYNCHRONIZABLE (record));
+  //modified = ephy_synchronizable_get_server_time_modified (EPHY_SYNCHRONIZABLE (record));
 
   LOG ("Storing password record (%s, %s, %s, %s, %s, %s)",
        id, origin, target_origin, username, username_field, password_field);
@@ -549,8 +494,6 @@ update_credentials_cb (GList    **records,
     ephy_password_record_set_password (replacement_record, data->password);
 
     ephy_password_manager_forget_record (data->manager, original_record, replacement_record, NULL);
-
-    g_signal_emit (data->manager, signals[SYNCHRONIZABLE_MODIFIED], 0, replacement_record, FALSE);
   } else {
     LOG ("Attempted to update password record that doesn't exist (likely Epiphany bug)");
   }
@@ -599,7 +542,6 @@ ephy_password_manager_save (EphyPasswordManager *self,
                                      username_field, password_field,
                                      timestamp, timestamp);
   ephy_password_manager_store_record (self, record);
-  g_signal_emit (self, signals[SYNCHRONIZABLE_MODIFIED], 0, record, FALSE);
 
   g_free (uuid);
   g_free (id);
@@ -663,8 +605,6 @@ retrieve_secret_cb (GObject        *source_object,
                                      created * 1000,
                                      modified * 1000);
   server_time_modified = g_ascii_strtod (timestamp, NULL);
-  ephy_synchronizable_set_server_time_modified (EPHY_SYNCHRONIZABLE (record),
-                                                server_time_modified);
   data->records = g_list_prepend (data->records, record);
 
 out:
@@ -893,7 +833,6 @@ forget_cb (GList    **records,
   }
 
   record = EPHY_PASSWORD_RECORD ((*records)->data);
-  g_signal_emit (self, signals[SYNCHRONIZABLE_DELETED], 0, record);
   ephy_password_manager_forget_record (self, record, NULL, task);
 }
 
@@ -942,8 +881,8 @@ forget_all_cb (GList    **records,
   secret_password_clearv (EPHY_FORM_PASSWORD_SCHEMA, attributes, NULL,
                           (GAsyncReadyCallback)secret_password_clear_cb, NULL);
 
-  for (GList *l = *records; l && l->data; l = l->next)
-    g_signal_emit (self, signals[SYNCHRONIZABLE_DELETED], 0, l->data);
+  //for (GList *l = *records; l && l->data; l = l->next)
+    //g_signal_emit (self, signals[SYNCHRONIZABLE_DELETED], 0, l->data);
 
   ephy_password_manager_cache_clear (self);
 
@@ -960,64 +899,6 @@ ephy_password_manager_forget_all (EphyPasswordManager *self)
    * one before clearing the secret schema. */
   ephy_password_manager_query (self, NULL, NULL, NULL, NULL, NULL, NULL, FALSE,
                                forget_all_cb, self);
-}
-
-static const char *
-synchronizable_manager_get_collection_name (EphySynchronizableManager *manager)
-{
-  return "ephy-passwords";
-}
-
-static GType
-synchronizable_manager_get_synchronizable_type (EphySynchronizableManager *manager)
-{
-  return EPHY_TYPE_PASSWORD_RECORD;
-}
-
-static gboolean
-synchronizable_manager_is_initial_sync (EphySynchronizableManager *manager)
-{
-  return ephy_sync_utils_get_passwords_sync_is_initial ();
-}
-
-static void
-synchronizable_manager_set_is_initial_sync (EphySynchronizableManager *manager,
-                                            gboolean                   is_initial)
-{
-  ephy_sync_utils_set_passwords_sync_is_initial (is_initial);
-}
-
-static gint64
-synchronizable_manager_get_sync_time (EphySynchronizableManager *manager)
-{
-  return ephy_sync_utils_get_passwords_sync_time ();
-}
-
-static void
-synchronizable_manager_set_sync_time (EphySynchronizableManager *manager,
-                                      gint64                     sync_time)
-{
-  ephy_sync_utils_set_passwords_sync_time (sync_time);
-}
-
-static void
-synchronizable_manager_add (EphySynchronizableManager *manager,
-                            EphySynchronizable        *synchronizable)
-{
-  EphyPasswordManager *self = EPHY_PASSWORD_MANAGER (manager);
-  EphyPasswordRecord *record = EPHY_PASSWORD_RECORD (synchronizable);
-
-  ephy_password_manager_store_record (self, record);
-}
-
-static void
-synchronizable_manager_remove (EphySynchronizableManager *manager,
-                               EphySynchronizable        *synchronizable)
-{
-  EphyPasswordManager *self = EPHY_PASSWORD_MANAGER (manager);
-  EphyPasswordRecord *record = EPHY_PASSWORD_RECORD (synchronizable);
-
-  ephy_password_manager_forget_record (self, record, NULL, NULL);
 }
 
 static void
@@ -1053,307 +934,4 @@ ephy_password_manager_replace_existing (EphyPasswordManager *self,
                                FALSE,
                                replace_existing_cb,
                                manage_record_async_data_new (self, record, NULL));
-}
-
-static void
-synchronizable_manager_save (EphySynchronizableManager *manager,
-                             EphySynchronizable        *synchronizable)
-{
-  EphyPasswordManager *self = EPHY_PASSWORD_MANAGER (manager);
-  EphyPasswordRecord *record = EPHY_PASSWORD_RECORD (synchronizable);
-
-  ephy_password_manager_replace_existing (self, record);
-}
-
-static EphyPasswordRecord *
-get_record_by_id (GList      *records,
-                  const char *id)
-{
-  g_assert (id);
-
-  for (GList *l = records; l && l->data; l = l->next) {
-    if (g_strcmp0 (ephy_password_record_get_id (l->data), id) == 0)
-      return l->data;
-  }
-
-  return NULL;
-}
-
-static EphyPasswordRecord *
-get_record_by_parameters (GList      *records,
-                          const char *origin,
-                          const char *target_origin,
-                          const char *username,
-                          const char *username_field,
-                          const char *password_field)
-{
-  for (GList *l = records; l && l->data; l = l->next) {
-    if (g_strcmp0 (ephy_password_record_get_username (l->data), username) == 0 &&
-        g_strcmp0 (ephy_password_record_get_origin (l->data), origin) == 0 &&
-        g_strcmp0 (ephy_password_record_get_target_origin (l->data), target_origin) == 0 &&
-        g_strcmp0 (ephy_password_record_get_username_field (l->data), username_field) == 0 &&
-        g_strcmp0 (ephy_password_record_get_password_field (l->data), password_field) == 0)
-      return l->data;
-  }
-
-  return NULL;
-}
-
-
-static GList *
-delete_record_by_id (GList      *records,
-                     const char *id)
-{
-  for (GList *l = records; l && l->data; l = l->next) {
-    if (g_strcmp0 (ephy_password_record_get_id (l->data), id) == 0) {
-      g_object_unref (l->data);
-      return g_list_delete_link (records, l);
-    }
-  }
-
-  return records;
-}
-
-static GPtrArray *
-ephy_password_manager_handle_initial_merge (EphyPasswordManager *self,
-                                            GList               *local_records,
-                                            GList               *remote_records)
-{
-  EphyPasswordRecord *record;
-  GHashTable *dont_upload;
-  GPtrArray *to_upload;
-  const char *remote_id;
-  const char *remote_origin;
-  const char *remote_target_origin;
-  const char *remote_username;
-  const char *remote_password;
-  const char *remote_username_field;
-  const char *remote_password_field;
-  guint64 remote_timestamp;
-  guint64 local_timestamp;
-  gint64 remote_server_time_modified;
-  gint64 local_server_time_modified;
-
-  g_assert (EPHY_IS_PASSWORD_MANAGER (self));
-
-  /* A saved password record is uniquely identified by its ID or by its tuple
-   * of (origin, username, username field, password field). When importing
-   * password records from server, we may encounter duplicates either by ID
-   * or by mentioned tuple. We start from the assumption that same ID means
-   * same tuple but same tuple does not necessarily mean same ID. This is what
-   * our merge logic is based on.
-   */
-  to_upload = g_ptr_array_new_with_free_func (g_object_unref);
-  dont_upload = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-
-  for (GList *l = remote_records; l && l->data; l = l->next) {
-    remote_id = ephy_password_record_get_id (l->data);
-    remote_origin = ephy_password_record_get_origin (l->data);
-    remote_target_origin = ephy_password_record_get_target_origin (l->data);
-    remote_username = ephy_password_record_get_username (l->data);
-    remote_password = ephy_password_record_get_password (l->data);
-    remote_username_field = ephy_password_record_get_username_field (l->data);
-    remote_password_field = ephy_password_record_get_password_field (l->data);
-    remote_timestamp = ephy_password_record_get_time_password_changed (l->data);
-    remote_server_time_modified = ephy_synchronizable_get_server_time_modified (l->data);
-
-    record = get_record_by_id (local_records, remote_id);
-    if (record) {
-      if (g_strcmp0 (ephy_password_record_get_password (record), remote_password) == 0) {
-        /* Same id, same password. Nothing to do. */
-        g_hash_table_add (dont_upload, g_strdup (remote_id));
-      } else {
-        /* Same id, different password. Keep the most recent modified. */
-        local_timestamp = ephy_password_record_get_time_password_changed (record);
-        if (local_timestamp > remote_timestamp) {
-          /* Local record is newer. Keep it and upload it to server.
-          * Also, must keep the most recent server time modified. */
-          local_server_time_modified = ephy_synchronizable_get_server_time_modified (EPHY_SYNCHRONIZABLE (record));
-          if (local_server_time_modified < remote_server_time_modified) {
-            ephy_synchronizable_set_server_time_modified (EPHY_SYNCHRONIZABLE (record),
-                                                          remote_server_time_modified);
-            ephy_password_manager_replace_existing (self, record);
-          }
-        } else {
-          /* Remote record is newer. Forget local record and store remote record. */
-          ephy_password_manager_forget_record (self, record, l->data, NULL);
-          g_hash_table_add (dont_upload, g_strdup (remote_id));
-        }
-      }
-    } else {
-      record = get_record_by_parameters (local_records,
-                                         remote_origin,
-                                         remote_target_origin,
-                                         remote_username,
-                                         remote_username_field,
-                                         remote_password_field);
-      if (record) {
-        /* Different id, same tuple. Keep the most recent modified. */
-        local_timestamp = ephy_password_record_get_time_password_changed (record);
-        if (local_timestamp > remote_timestamp) {
-          /* Local record is newer. Keep it, upload it and delete remote record from server. */
-          g_signal_emit (self, signals[SYNCHRONIZABLE_DELETED], 0, l->data);
-        } else {
-          /* Remote record is newer. Forget local record and store remote record. */
-          ephy_password_manager_forget_record (self, record, l->data, NULL);
-          g_hash_table_add (dont_upload, g_strdup (remote_id));
-        }
-      } else {
-        record = get_record_by_parameters (local_records,
-                                           remote_origin,
-                                           remote_origin,
-                                           remote_username,
-                                           remote_username_field,
-                                           remote_password_field);
-        if (record) {
-          /* A leftover from migration: the local record has incorrect target_origin
-           * Replace it with remote record */
-          ephy_password_manager_forget_record (self, record, l->data, NULL);
-          g_hash_table_add (dont_upload, g_strdup (ephy_password_record_get_id (record)));
-        } else {
-          /* Different id, different tuple. This is a new record. */
-          ephy_password_manager_store_record (self, l->data);
-          g_hash_table_add (dont_upload, g_strdup (remote_id));
-        }
-      }
-    }
-  }
-
-  /* Set the remaining local records to be uploaded to server. */
-  for (GList *l = local_records; l && l->data; l = l->next) {
-    record = EPHY_PASSWORD_RECORD (l->data);
-    if (!g_hash_table_contains (dont_upload, ephy_password_record_get_id (record)))
-      g_ptr_array_add (to_upload, g_object_ref (record));
-  }
-
-  g_hash_table_unref (dont_upload);
-
-  return to_upload;
-}
-
-static GPtrArray *
-ephy_password_manager_handle_regular_merge (EphyPasswordManager  *self,
-                                            GList               **local_records,
-                                            GList                *deleted_records,
-                                            GList                *updated_records)
-{
-  EphyPasswordRecord *record;
-  GPtrArray *to_upload;
-  const char *remote_id;
-  const char *remote_origin;
-  const char *remote_target_origin;
-  const char *remote_username;
-  const char *remote_username_field;
-  const char *remote_password_field;
-  guint64 remote_timestamp;
-  guint64 local_timestamp;
-
-  g_assert (EPHY_IS_PASSWORD_MANAGER (self));
-
-  to_upload = g_ptr_array_new_with_free_func (g_object_unref);
-
-  for (GList *l = deleted_records; l && l->data; l = l->next) {
-    remote_id = ephy_password_record_get_id (l->data);
-    record = get_record_by_id (*local_records, remote_id);
-    if (record) {
-      ephy_password_manager_forget_record (self, record, NULL, NULL);
-      *local_records = delete_record_by_id (*local_records, remote_id);
-    }
-  }
-
-  /* See comment in ephy_password_manager_handle_initial_merge. */
-  for (GList *l = updated_records; l && l->data; l = l->next) {
-    remote_id = ephy_password_record_get_id (l->data);
-    remote_origin = ephy_password_record_get_origin (l->data);
-    remote_target_origin = ephy_password_record_get_target_origin (l->data);
-    remote_username = ephy_password_record_get_username (l->data);
-    remote_username_field = ephy_password_record_get_username_field (l->data);
-    remote_password_field = ephy_password_record_get_password_field (l->data);
-    remote_timestamp = ephy_password_record_get_time_password_changed (l->data);
-
-    record = get_record_by_id (*local_records, remote_id);
-    if (record) {
-      /* Same id. Overwrite local record. */
-      ephy_password_manager_forget_record (self, record, l->data, NULL);
-    } else {
-      record = get_record_by_parameters (*local_records,
-                                         remote_origin,
-                                         remote_target_origin,
-                                         remote_username,
-                                         remote_username_field,
-                                         remote_password_field);
-      if (record) {
-        /* Different id, same tuple. Keep the most recent modified. */
-        local_timestamp = ephy_password_record_get_time_password_changed (record);
-        if (local_timestamp > remote_timestamp) {
-          /* Local record is newer. Keep it, upload it and delete remote record from server. */
-          g_ptr_array_add (to_upload, g_object_ref (record));
-          g_signal_emit (self, signals[SYNCHRONIZABLE_DELETED], 0, l->data);
-        } else {
-          /* Remote record is newer. Forget local record and store remote record. */
-          ephy_password_manager_forget_record (self, record, l->data, NULL);
-        }
-      } else {
-        /* Different id, different tuple. This is a new record. */
-        ephy_password_manager_store_record (self, l->data);
-      }
-    }
-  }
-
-  return to_upload;
-}
-
-static void
-merge_cb (GList    **records,
-          gpointer   user_data)
-{
-  MergePasswordsAsyncData *data = (MergePasswordsAsyncData *)user_data;
-  GPtrArray *to_upload;
-
-  if (data->is_initial)
-    to_upload = ephy_password_manager_handle_initial_merge (data->manager, *records,
-                                                            data->remotes_updated);
-  else
-    to_upload = ephy_password_manager_handle_regular_merge (data->manager, records,
-                                                            data->remotes_deleted,
-                                                            data->remotes_updated);
-
-  data->callback (to_upload, data->user_data);
-
-  merge_passwords_async_data_free (data);
-}
-
-static void
-synchronizable_manager_merge (EphySynchronizableManager              *manager,
-                              gboolean                                is_initial,
-                              GList                                  *remotes_deleted,
-                              GList                                  *remotes_updated,
-                              EphySynchronizableManagerMergeCallback  callback,
-                              gpointer                                user_data)
-{
-  EphyPasswordManager *self = EPHY_PASSWORD_MANAGER (manager);
-
-  ephy_password_manager_query (self, NULL, NULL, NULL, NULL, NULL, NULL, FALSE,
-                               merge_cb,
-                               merge_passwords_async_data_new (self,
-                                                               is_initial,
-                                                               g_list_copy_deep (remotes_deleted, (GCopyFunc)g_object_ref, NULL),
-                                                               g_list_copy_deep (remotes_updated, (GCopyFunc)g_object_ref, NULL),
-                                                               callback,
-                                                               user_data));
-}
-
-static void
-ephy_synchronizable_manager_iface_init (EphySynchronizableManagerInterface *iface)
-{
-  iface->get_collection_name = synchronizable_manager_get_collection_name;
-  iface->get_synchronizable_type = synchronizable_manager_get_synchronizable_type;
-  iface->is_initial_sync = synchronizable_manager_is_initial_sync;
-  iface->set_is_initial_sync = synchronizable_manager_set_is_initial_sync;
-  iface->get_sync_time = synchronizable_manager_get_sync_time;
-  iface->set_sync_time = synchronizable_manager_set_sync_time;
-  iface->add = synchronizable_manager_add;
-  iface->remove = synchronizable_manager_remove;
-  iface->save = synchronizable_manager_save;
-  iface->merge = synchronizable_manager_merge;
 }
