@@ -92,7 +92,4 @@ void                     ephy_embed_shell_unregister_ucm (EphyEmbedShell        
 
 gboolean                 ephy_embed_shell_should_remember_passwords (EphyEmbedShell *shell);
 
-void                     ephy_embed_shell_set_web_extension_initialization_data (EphyEmbedShell *shell,
-                                                                                 GVariant       *data);
-
 G_END_DECLS

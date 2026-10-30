@@ -1,26 +1,227 @@
 ninja: Entering directory `build'
-[1/169] Generating config.h with a custom command
-[2/25] Generating src/epiphany-resources_h with a custom command
-[3/25] Generating src/epiphany-resources_c with a custom command
-[4/25] Compiling C object src/epiphany.p/meson-generated_.._epiphany-resources.c.o
-[5/25] Compiling C object tests/test-ephy-web-view.p/meson-generated_.._.._src_epiphany-resources.c.o
-[6/25] Compiling C object tests/test-location-entry.p/meson-generated_.._.._src_epiphany-resources.c.o
-[7/25] Compiling C object src/libephymain.so.p/window-commands.c.o
-[8/25] Linking target src/libephymain.so
-[9/25] Generating symbol file src/libephymain.so.p/libephymain.so.symbols
-[10/25] Linking target src/ephy-profile-migrator
-[11/25] Linking target tests/test-ephy-encodings
-[12/25] Linking target tests/test-ephy-embed-shell
-[13/25] Linking target src/epiphany-webapp-provider
-[14/25] Linking target tests/test-ephy-output-encoding
-[15/25] Linking target tests/test-ephy-web-view
-[16/25] Linking target tests/test-ephy-string
-[17/25] Linking target tests/test-ephy-uri-helpers
-[18/25] Linking target src/epiphany-search-provider
-[19/25] Linking target tests/test-ephy-migration
-[20/25] Linking target tests/test-ephy-history
-[21/25] Linking target tests/test-ephy-file-helpers
-[22/25] Linking target tests/test-ephy-sqlite
-[23/25] Linking target tests/test-ephy-embed-utils
-[24/25] Linking target src/epiphany
-[25/25] Linking target tests/test-location-entry
+[1/220] Generating embed/web-process-extension/epiphany-web-process-extension-resources_h with a custom command
+[2/220] Generating embed/web-process-extension/epiphany-web-process-extension-resources_c with a custom command
+[3/220] Generating config.h with a custom command
+[4/220] Generating src/epiphany-resources_h with a custom command
+[5/220] Compiling C object lib/libephymisc.so.p/ephy-output-encoding.c.o
+[6/220] Generating GObject enum file embed/ephy-embed-type-builtins.c (wrapped by meson because command contains newlines, to capture output)
+[7/220] Generating GObject enum file embed/ephy-embed-type-builtins.h (wrapped by meson because command contains newlines, to capture output)
+[8/220] Compiling C object lib/libephymisc.so.p/ephy-debug.c.o
+[9/220] Compiling C object lib/libephymisc.so.p/ephy-langs.c.o
+[10/220] Compiling C object lib/libephymisc.so.p/ephy-security-levels.c.o
+[11/220] Compiling C object lib/libephymisc.so.p/ephy-signal-accumulator.c.o
+[12/220] Compiling C object lib/libephymisc.so.p/ephy-favicon-helpers.c.o
+[13/220] Compiling C object lib/libephymisc.so.p/ephy-sqlite-statement.c.o
+[14/220] Compiling C object lib/libephymisc.so.p/ephy-pixbuf-utils.c.o
+[15/220] Compiling C object lib/libephymisc.so.p/ephy-sqlite-connection.c.o
+[16/220] Compiling C object lib/libephymisc.so.p/contrib_dzl-fuzzy-mutable-index.c.o
+[17/220] Compiling C object lib/libephymisc.so.p/ephy-flatpak-utils.c.o
+[18/220] Compiling C object lib/libephymisc.so.p/ephy-notification-container.c.o
+[19/220] Compiling C object lib/libephymisc.so.p/ephy-smaps.c.o
+[20/220] Compiling C object lib/libephymisc.so.p/ephy-file-dialog-utils.c.o
+[21/220] Compiling C object lib/libephymisc.so.p/contrib_gnome-languages.c.o
+[22/220] Compiling C object lib/libephymisc.so.p/ephy-profile-utils.c.o
+[23/220] Compiling C object lib/libephymisc.so.p/ephy-notification.c.o
+[24/220] Compiling C object lib/libephymisc.so.p/ephy-string.c.o
+[25/220] Compiling C object lib/libephymisc.so.p/contrib_dzl-suggestion.c.o
+[26/220] Compiling C object lib/libephymisc.so.p/ephy-search-engine-manager.c.o
+[27/220] Compiling C object lib/libephymisc.so.p/ephy-settings.c.o
+[28/220] Generating src/epiphany-resources_c with a custom command
+[29/220] Compiling C object lib/libephymisc.so.p/ephy-time-helpers.c.o
+[30/220] Compiling C object lib/libephymisc.so.p/ephy-search-engine.c.o
+[31/220] Compiling C object lib/libephymisc.so.p/ephy-zoom.c.o
+[32/220] Compiling C object lib/libephymisc.so.p/ephy-file-helpers.c.o
+[33/220] Compiling C object lib/libephymisc.so.p/ephy-permissions-manager.c.o
+[34/220] Compiling C object lib/autofill/libephyautofill.so.p/ephy-autofill-storage.c.o
+[35/220] Compiling C object lib/libephymisc.so.p/ephy-suggestion.c.o
+[36/220] Compiling C object lib/libephymisc.so.p/history_ephy-history-service-hosts-table.c.o
+[37/220] Compiling C object lib/libephymisc.so.p/history_ephy-history-service-visits-table.c.o
+[38/220] Linking target lib/autofill/libephyautofill.so
+[39/220] Compiling C object lib/sync/libephysync.so.p/ephy-open-tabs-manager.c.o
+[40/220] Compiling C object lib/sync/libephysync.so.p/ephy-history-manager.c.o
+[41/220] Compiling C object lib/libephymisc.so.p/ephy-snapshot-service.c.o
+[42/220] Compiling C object lib/sync/libephysync.so.p/ephy-history-record.c.o
+[43/220] Compiling C object lib/sync/libephysync.so.p/ephy-tabs-catalog.c.o
+[44/220] Compiling C object lib/libephymisc.so.p/history_ephy-history-service-urls-table.c.o
+[45/220] Compiling C object lib/libephymisc.so.p/ephy-uri-helpers.c.o
+[46/220] Compiling C object lib/sync/libephysync.so.p/ephy-open-tabs-record.c.o
+[47/220] Compiling C object lib/libephymisc.so.p/ephy-sync-utils.c.o
+[48/220] Compiling C object lib/sync/libephysync.so.p/ephy-password-record.c.o
+[49/220] Compiling C object lib/sync/libephysync.so.p/ephy-synchronizable.c.o
+[50/220] Compiling C object lib/libephymisc.so.p/ephy-user-agent.c.o
+[51/220] Compiling C object lib/sync/libephysync.so.p/ephy-synchronizable-manager.c.o
+[52/220] Compiling C object lib/sync/libephysync.so.p/debug_ephy-sync-debug.c.o
+[53/220] Compiling C object embed/libephyembed.a.p/ephy-encoding.c.o
+[54/220] Compiling C object lib/sync/libephysync.so.p/ephy-password-import.c.o
+[55/220] Compiling C object lib/libephymisc.so.p/history_ephy-history-service.c.o
+[56/220] Compiling C object lib/sync/libephysync.so.p/ephy-password-manager.c.o
+[57/220] Compiling C object embed/libephyembed.a.p/ephy-encodings.c.o
+[58/220] Compiling C object lib/libephymisc.so.p/ephy-web-app-utils.c.o
+[59/220] Compiling C object lib/sync/libephysync.so.p/ephy-sync-crypto.c.o
+[60/220] Compiling C object embed/libephyembed.a.p/ephy-downloads-manager.c.o
+[61/220] Compiling C object embed/libephyembed.a.p/ephy-embed-autofill.c.o
+[62/220] Compiling C object embed/libephyembed.a.p/ephy-embed-utils.c.o
+[63/220] Compiling C object embed/libephyembed.a.p/meson-generated_.._ephy-embed-type-builtins.c.o
+[64/220] Compiling C object embed/libephyembed.a.p/ephy-embed-container.c.o
+[65/220] Generating symbol file lib/autofill/libephyautofill.so.p/libephyautofill.so.symbols
+[66/220] Compiling C object embed/libephyembed.a.p/ephy-embed-prefs.c.o
+[67/220] Linking target lib/libephymisc.so
+[68/220] Compiling C object embed/libephyembed.a.p/ephy-embed.c.o
+[69/220] Compiling C object embed/libephyembed.a.p/ephy-about-handler.c.o
+[70/220] Compiling C object embed/libephyembed.a.p/ephy-client-certificate-manager.c.o
+[71/220] Compiling C object embed/libephyembed.a.p/ephy-floating-bar.c.o
+[72/220] Compiling C object embed/libephyembed.a.p/ephy-file-monitor.c.o
+[73/220] Compiling C object embed/libephyembed.a.p/ephy-download.c.o
+[74/220] Compiling C object embed/libephyembed.a.p/ephy-find-toolbar.c.o
+[75/220] Generating symbol file lib/libephymisc.so.p/libephymisc.so.symbols
+[76/220] Compiling C object embed/libephyembed.a.p/ephy-search-entry.c.o
+[77/220] Compiling C object embed/libephyembed.a.p/ephy-embed-shell.c.o
+[78/220] Compiling C object embed/libephyembed.a.p/ephy-view-source-handler.c.o
+[79/220] Compiling C object src/libephymain.so.p/bookmarks_ephy-bookmarks-export.c.o
+[80/220] Compiling C object embed/libephyembed.a.p/ephy-reader-handler.c.o
+[81/220] Compiling C object embed/libephyembed.a.p/ephy-filters-manager.c.o
+[82/220] Compiling C object src/libephymain.so.p/meson-generated_.._ephy-type-builtins.c.o
+[83/220] Compiling C object src/libephymain.so.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[84/220] Compiling C object lib/sync/libephysync.so.p/ephy-sync-service.c.o
+[85/220] Compiling C object src/libephymain.so.p/ephy-action-helper.c.o
+[86/220] Compiling C object src/libephymain.so.p/bookmarks_ephy-bookmark-row.c.o
+[87/220] Compiling C object src/libephymain.so.p/ephy-action-bar-end.c.o
+[88/220] Compiling C object src/libephymain.so.p/ephy-desktop-utils.c.o
+[89/220] Linking target lib/sync/libephysync.so
+[90/220] Compiling C object src/libephymain.so.p/ephy-encoding-row.c.o
+[91/220] Compiling C object src/libephymain.so.p/ephy-downloads-paintable.c.o
+[92/220] Compiling C object src/libephymain.so.p/bookmarks_ephy-bookmarks-manager.c.o
+[93/220] Compiling C object src/libephymain.so.p/ephy-downloads-popover.c.o
+[94/220] Compiling C object src/libephymain.so.p/bookmarks_ephy-bookmarks-import.c.o
+[95/220] Compiling C object src/libephymain.so.p/bookmarks_ephy-bookmark.c.o
+[96/220] Compiling C object src/libephymain.so.p/ephy-action-bar.c.o
+[97/220] Compiling C object src/libephymain.so.p/ephy-certificate-dialog.c.o
+[98/220] Compiling C object src/libephymain.so.p/bookmarks_ephy-bookmark-properties.c.o
+[99/220] Compiling C object src/libephymain.so.p/ephy-action-bar-start.c.o
+[100/220] Generating symbol file lib/sync/libephysync.so.p/libephysync.so.symbols
+[101/220] Compiling C object src/libephymain.so.p/ephy-download-widget.c.o
+[102/220] Compiling C object src/libephymain.so.p/bookmarks_ephy-bookmarks-dialog.c.o
+[103/220] Compiling C object src/libephymain.so.p/ephy-header-bar.c.o
+[104/220] Compiling C object src/libephymain.so.p/ephy-encoding-dialog.c.o
+[105/220] Compiling C object src/libephymain.so.p/ephy-fullscreen-box.c.o
+[106/220] Compiling C object src/libephymain.so.p/ephy-link.c.o
+[107/220] Compiling C object src/libephymain.so.p/ephy-history-dialog-row.c.o
+[108/220] Compiling C object src/libephymain.so.p/ephy-firefox-sync-dialog.c.o
+[109/220] Compiling C object src/libephymain.so.p/ephy-page-menu-button.c.o
+[110/220] Compiling C object src/libephymain.so.p/ephy-mouse-gesture-controller.c.o
+[111/220] Compiling C object src/libephymain.so.p/ephy-lockdown.c.o
+[112/220] Compiling C object src/libephymain.so.p/ephy-history-dialog.c.o
+[113/220] Compiling C object src/libephymain.so.p/ephy-title-box.c.o
+[114/220] Compiling C object embed/libephyembed.a.p/ephy-web-view.c.o
+[115/220] Linking static target embed/libephyembed.a
+[116/220] Compiling C object src/libephymain.so.p/ephy-location-controller.c.o
+[117/220] Compiling C object src/libephymain.so.p/ephy-privacy-report.c.o
+[118/220] Compiling C object src/libephymain.so.p/ephy-security-dialog.c.o
+[119/220] Compiling C object src/libephymain.so.p/ephy-passwords-view.c.o
+[120/220] Compiling C object src/libephymain.so.p/ephy-site-menu-button.c.o
+[121/220] Compiling C object src/libephymain.so.p/ephy-title-widget.c.o
+[122/220] Compiling C object src/libephymain.so.p/ephy-suggestion-model.c.o
+[123/220] Compiling C object src/libephymain.so.p/ephy-shell.c.o
+[124/220] Compiling C object src/libephymain.so.p/preferences_ephy-search-engine-listbox.c.o
+[125/220] Compiling C object embed/web-process-extension/libephywebprocessextension.so.p/meson-generated_.._epiphany-web-process-extension-resources.c.o
+[126/220] Compiling C object src/libephymain.so.p/preferences_ephy-data-view.c.o
+[127/220] Compiling C object src/libephymain.so.p/preferences_ephy-search-engine-row.c.o
+[128/220] Compiling C object src/libephymain.so.p/ephy-location-entry.c.o
+[129/220] Compiling C object src/libephymain.so.p/preferences_clear-data-view.c.o
+[130/220] Compiling C object src/libephymain.so.p/context-menu-commands.c.o
+[131/220] Compiling C object src/libephymain.so.p/ephy-session.c.o
+[132/220] Compiling C object src/libephymain.so.p/ephy-tab-view.c.o
+[133/220] Compiling C object src/libephymain.so.p/preferences_ephy-prefs-dialog.c.o
+[134/220] Compiling C object src/libephymain.so.p/preferences_autofill-view.c.o
+[135/220] Compiling C object src/libephymain.so.p/preferences_webapp-additional-urls-dialog.c.o
+[136/220] Compiling C object src/libephymain.so.p/preferences_prefs-search-engine-page.c.o
+[137/220] Compiling C object embed/web-process-extension/libephywebprocessextension.so.p/ephy-web-process-extension.c.o
+FAILED: [code=1] embed/web-process-extension/libephywebprocessextension.so.p/ephy-web-process-extension.c.o 
+cc -Iembed/web-process-extension/libephywebprocessextension.so.p -Iembed/web-process-extension -I../embed/web-process-extension -Ilib/autofill -I../lib/autofill -I. -I.. -Ilib -I../lib -I../lib/contrib -I../lib/history -Ilib/sync -I../lib/sync -I../lib/sync/debug -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6 -I/usr/include/gtk-4.0 -I/usr/include/pango-1.0 -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/glycin-2 -I/usr/include/cairo -I/usr/include/libxml2 -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/pixman-1 -I/usr/include/graphene-1.0 -I/usr/lib64/graphene-1.0/include -I/usr/include/libsecret-1 -I/usr/include/gio-unix-2.0 -I/usr/include/p11-kit-1 -I/usr/include/libsoup-3.0 -I/usr/include/webkitgtk-6.0 -I/usr/include/gsettings-desktop-schemas -I/usr/include/json-glib-1.0 -I/usr/include/libadwaita-1 -I/usr/include/appstream -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=gnu23 -O2 -g -Werror=declaration-after-statement -Werror=implicit-function-declaration -Wno-cast-function-type -Wno-missing-field-initializers -Wno-unused-parameter -fPIC -mfpmath=sse -msse -msse2 -pthread -mfpmath=sse -msse -msse2 -mfpmath=sse -msse -msse2 -mfpmath=sse -msse -msse2 -mfpmath=sse -msse -msse2 -DWITH_GZFILEOP -MD -MQ embed/web-process-extension/libephywebprocessextension.so.p/ephy-web-process-extension.c.o -MF embed/web-process-extension/libephywebprocessextension.so.p/ephy-web-process-extension.c.o.d -o embed/web-process-extension/libephywebprocessextension.so.p/ephy-web-process-extension.c.o -c ../embed/web-process-extension/ephy-web-process-extension.c
+../embed/web-process-extension/ephy-web-process-extension.c:44:10: fatal error: ephy-webextension-common.h: そのようなファイルやディレクトリはありません
+   44 | #include "ephy-webextension-common.h"
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+[138/220] Compiling C object embed/web-process-extension/libephywebprocessextension.so.p/ephy-web-overview-model.c.o
+[139/220] Compiling C object src/libephymain.so.p/preferences_prefs-features-page.c.o
+[140/220] Compiling C object src/libephymain.so.p/synced-tabs-dialog.c.o
+[141/220] Compiling C object src/libephymain.so.p/preferences_prefs-appearance-page.c.o
+[142/220] Compiling C object src/libephymain.so.p/preferences_prefs-privacy-page.c.o
+[143/220] Compiling C object embed/web-process-extension/libephywebprocessextension.so.p/ephy-web-process-extension-main.c.o
+[144/220] Compiling C object src/ephy-profile-migrator.p/meson-generated_.._ephy-type-builtins.c.o
+[145/220] Compiling C object src/ephy-profile-migrator.p/profile-migrator_ephy-profile-migrator.c.o
+[146/220] Compiling C object src/epiphany-webapp-provider.p/webapp-provider_ephy-webapp-provider-main.c.o
+[147/220] Compiling C object src/epiphany-search-provider.p/meson-generated_.._ephy-type-builtins.c.o
+[148/220] Compiling C object src/epiphany-search-provider.p/search-provider_ephy-search-provider-main.c.o
+[149/220] Compiling C object src/epiphany-webapp-provider.p/webapp-provider_ephy-webapp-provider.c.o
+[150/220] Compiling C object src/epiphany.p/meson-generated_.._epiphany-resources.c.o
+[151/220] Compiling C object src/epiphany-webapp-provider.p/meson-generated_.._ephy-type-builtins.c.o
+[152/220] Compiling C object src/epiphany-search-provider.p/search-provider_ephy-search-provider.c.o
+[153/220] Compiling C object src/ephy-profile-migrator.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[154/220] Compiling C object src/epiphany-search-provider.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[155/220] Compiling C object src/libephymain.so.p/preferences_prefs-general-page.c.o
+[156/220] Compiling C object src/epiphany-webapp-provider.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[157/220] Compiling C object src/epiphany.p/meson-generated_.._ephy-type-builtins.c.o
+[158/220] Compiling C object src/epiphany.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[159/220] Compiling C object tests/test-ephy-embed-shell.p/ephy-embed-shell-test.c.o
+[160/220] Compiling C object tests/test-ephy-embed-shell.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[161/220] Compiling C object tests/test-ephy-embed-shell.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[162/220] Compiling C object tests/test-ephy-embed-utils.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[163/220] Compiling C object tests/test-ephy-embed-utils.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[164/220] Compiling C object tests/test-ephy-embed-utils.p/ephy-embed-utils-test.c.o
+[165/220] Compiling C object src/epiphany.p/ephy-main.c.o
+[166/220] Compiling C object tests/test-ephy-encodings.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[167/220] Compiling C object tests/test-ephy-file-helpers.p/ephy-file-helpers-test.c.o
+[168/220] Compiling C object tests/test-ephy-file-helpers.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[169/220] Compiling C object tests/test-ephy-encodings.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[170/220] Compiling C object tests/test-ephy-file-helpers.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[171/220] Compiling C object tests/test-ephy-history.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[172/220] Compiling C object tests/test-location-entry.p/meson-generated_.._.._src_epiphany-resources.c.o
+[173/220] Compiling C object tests/test-ephy-output-encoding.p/ephy-output-encoding-test.c.o
+[174/220] Compiling C object tests/test-ephy-history.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[175/220] Compiling C object tests/test-ephy-history.p/ephy-history-test.c.o
+[176/220] Compiling C object tests/test-ephy-encodings.p/ephy-encodings-test.c.o
+[177/220] Compiling C object tests/test-location-entry.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[178/220] Compiling C object tests/test-location-entry.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[179/220] Compiling C object tests/test-ephy-migration.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[180/220] Compiling C object tests/test-ephy-uri-helpers.p/ephy-uri-helpers-test.c.o
+[181/220] Compiling C object src/libephymain.so.p/window-commands.c.o
+[182/220] Compiling C object tests/test-ephy-migration.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[183/220] Compiling C object tests/test-ephy-search-engine-manager.p/ephy-search-engine-manager-test.c.o
+[184/220] Compiling C object tests/test-location-entry.p/ephy-location-entry-test.c.o
+[185/220] Compiling C object tests/test-ephy-sqlite.p/ephy-sqlite-test.c.o
+[186/220] Compiling C object tests/test-ephy-migration.p/ephy-migration-test.c.o
+[187/220] Compiling C object tests/test-ephy-string.p/ephy-string-test.c.o
+[188/220] Compiling C object tests/test-ephy-output-encoding.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[189/220] Compiling C object src/libephymain.so.p/ephy-window.c.o
+[190/220] Compiling C object tests/test-ephy-sqlite.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[191/220] Compiling C object tests/test-ephy-string.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[192/220] Compiling C object tests/test-ephy-sqlite.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[193/220] Compiling C object tests/test-ephy-string.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[194/220] Compiling C object tests/test-ephy-uri-helpers.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[195/220] Compiling C object tests/test-ephy-web-view.p/meson-generated_.._.._src_epiphany-resources.c.o
+[196/220] Compiling C object tests/test-ephy-uri-helpers.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[197/220] Compiling C object tests/test-ephy-output-encoding.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[198/220] Compiling C object tests/test-ephy-web-view.p/meson-generated_.._.._src_ephy-type-builtins.c.o
+[199/220] Linking target tests/test-ephy-search-engine-manager
+[200/220] Compiling C object tests/test-ephy-web-view.p/meson-generated_.._.._embed_ephy-embed-type-builtins.c.o
+[201/220] Linking target src/libephymain.so
+[202/220] Compiling C object tests/test-ephy-web-view.p/ephy-web-view-test.c.o
+[203/220] Generating symbol file src/libephymain.so.p/libephymain.so.symbols
+[204/220] Linking target tests/test-ephy-uri-helpers
+[205/220] Linking target src/ephy-profile-migrator
+[206/220] Linking target tests/test-ephy-output-encoding
+[207/220] Linking target src/epiphany-webapp-provider
+[208/220] Linking target src/epiphany
+[209/220] Linking target src/epiphany-search-provider
+[210/220] Linking target tests/test-ephy-migration
+[211/220] Linking target tests/test-ephy-history
+[212/220] Linking target tests/test-location-entry
+[213/220] Linking target tests/test-ephy-encodings
+[214/220] Linking target tests/test-ephy-embed-utils
+[215/220] Linking target tests/test-ephy-sqlite
+[216/220] Linking target tests/test-ephy-web-view
+[217/220] Linking target tests/test-ephy-string
+[218/220] Linking target tests/test-ephy-file-helpers
+[219/220] Linking target tests/test-ephy-embed-shell
+ninja: build stopped: cannot make progress due to previous errors.

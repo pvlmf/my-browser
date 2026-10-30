@@ -37,12 +37,11 @@ webkit_web_process_extension_initialize_with_user_data (WebKitWebProcessExtensio
   const char *guid;
   const char *profile_dir;
   gboolean should_remember_passwords;
-  g_autoptr (GVariant) web_extensions = NULL;
   g_autoptr (GError) error = NULL;
 
   ephy_debug_set_fatal_criticals ();
 
-  g_variant_get (user_data, "(&sm&sbv)", &guid, &profile_dir, &should_remember_passwords, &web_extensions);
+  g_variant_get (user_data, "(&sm&sbv)", &guid, &profile_dir, &should_remember_passwords);
 
   if (!ephy_file_helpers_init (profile_dir, 0, &error))
     g_warning ("Failed to initialize file helpers: %s", error->message);
@@ -56,8 +55,7 @@ webkit_web_process_extension_initialize_with_user_data (WebKitWebProcessExtensio
   ephy_web_process_extension_initialize (extension,
                                          webkit_extension,
                                          guid,
-                                         should_remember_passwords,
-                                         web_extensions);
+                                         should_remember_passwords);
 }
 
 static void __attribute__((destructor))

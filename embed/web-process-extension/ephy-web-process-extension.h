@@ -33,7 +33,6 @@ EphyWebProcessExtension *ephy_web_process_extension_get        (void);
 void                     ephy_web_process_extension_initialize (EphyWebProcessExtension   *extension,
                                                                 WebKitWebProcessExtension *wk_extension,
                                                                 const char                *guid,
-                                                                gboolean                   should_remember_passwords,
-                                                                GVariant                  *web_extensions);
+                                                                gboolean                   should_remember_passwords);
 
 G_END_DECLS
