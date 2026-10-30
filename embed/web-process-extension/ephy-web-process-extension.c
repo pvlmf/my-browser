@@ -22,8 +22,6 @@
 
 #include "ephy-web-process-extension.h"
 
-#include <string.h>
-
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <glib/gprintf.h>
@@ -41,7 +39,6 @@
 #include "ephy-settings.h"
 #include "ephy-uri-helpers.h"
 #include "ephy-web-overview-model.h"
-#include "ephy-webextension-common.h"
 
 struct _EphyWebProcessExtension {
   GObject parent_instance;
