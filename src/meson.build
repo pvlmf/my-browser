@@ -10,8 +10,6 @@ enums = gnome.mkenums_simple('ephy-type-builtins',
   sources: types_headers
 )
 
-subdir('webextension')
-
 libephymain_sources = [
   'bookmarks/ephy-bookmark.c',
   'bookmarks/ephy-bookmark-properties.c',
@@ -71,7 +69,6 @@ libephymain_sources = [
   'preferences/webapp-additional-urls-dialog.c',
   'synced-tabs-dialog.c',
   'window-commands.c',
-  ephywebextension_src,
   compile_schemas,
   enums
 ]
@@ -143,8 +140,6 @@ libephymain_includes = include_directories(
   '../lib/contrib',
   'bookmarks',
   'preferences',
-  'webextension',
-  'webextension/api',
 )
 
 libephymain = shared_library('ephymain',

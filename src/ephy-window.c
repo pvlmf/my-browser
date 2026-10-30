@@ -1334,17 +1334,6 @@ sync_tab_title (EphyEmbed  *embed,
 }
 
 static void
-sync_tab_page_action (EphyWebView *view,
-                      GParamSpec  *pspec,
-                      EphyWindow  *window)
-{
-  EphyWebExtensionManager *manager;
-
-  manager = ephy_web_extension_manager_get_default ();
-  ephy_web_extension_manager_update_location_entry (manager, window);
-}
-
-static void
 update_mute_action (EphyWindow    *window,
                     GParamSpec    *pspec,
                     WebKitWebView *web_view)
@@ -1582,7 +1571,6 @@ populate_context_menu (WebKitWebView       *web_view,
                        WebKitHitTestResult *hit_test_result,
                        EphyWindow          *window)
 {
-  EphyWebExtensionManager *extension_manager = ephy_web_extension_manager_get_default ();
   WebKitContextMenuItem *input_methods_item = NULL;
   WebKitContextMenuItem *insert_emoji_item = NULL;
   WebKitContextMenuItem *copy_image_item = NULL;
@@ -1610,8 +1598,6 @@ populate_context_menu (WebKitWebView       *web_view,
   char *open_selection_action_name = NULL;
   const char *selected_text = NULL;
   const char *uri = NULL;
-  GdkEvent *event = NULL;
-  GdkModifierType state = 0;
   gboolean fullscreen_lockdown;
   gboolean is_password = FALSE;
   guint64 frame_id = 0;
@@ -1923,14 +1909,6 @@ populate_context_menu (WebKitWebView       *web_view,
                                   webkit_context_menu_item_new_from_stock_action (WEBKIT_CONTEXT_MENU_ACTION_INSPECT_ELEMENT));
     }
   }
-
-  event = webkit_context_menu_get_event (context_menu);
-  if (event && gdk_event_get_event_type (event) == GDK_BUTTON_PRESS)
-    state = gdk_event_get_modifier_state (event);
-
-  ephy_web_extension_manager_append_context_menu (extension_manager, web_view,
-                                                  context_menu, hit_test_result, state,
-                                                  is_downloadable_audio, is_downloadable_video);
 
   return GDK_EVENT_PROPAGATE;
 }
@@ -2765,7 +2743,6 @@ ephy_window_connect_active_embed (EphyWindow *window)
   sync_tab_address (view, NULL, window);
 
   sync_tab_zoom (web_view, NULL, window);
-  sync_tab_page_action (view, NULL, window);
 
   if (EPHY_IS_LOCATION_ENTRY (title_widget)) {
     EphyLocationEntry *lentry = EPHY_LOCATION_ENTRY (title_widget);
@@ -4670,8 +4647,6 @@ ephy_window_constructed (GObject *object)
   window->mouse_gesture_controller = ephy_mouse_gesture_controller_new (window);
 
   ephy_window_set_chrome (window, chrome);
-
-  ephy_web_extension_manager_install_actions (ephy_web_extension_manager_get_default (), window);
 
 #if 0
   /* Disabled due to https://gitlab.gnome.org/GNOME/epiphany/-/issues/1915 */

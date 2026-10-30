@@ -35,7 +35,6 @@
 #include "ephy-session.h"
 #include "ephy-sync-service.h"
 #include "ephy-web-app-utils.h"
-#include "ephy-web-extension-manager.h"
 #include "ephy-window.h"
 
 G_BEGIN_DECLS
