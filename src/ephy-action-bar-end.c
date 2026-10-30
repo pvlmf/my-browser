@@ -23,13 +23,11 @@
 
 #include "ephy-bookmark-properties.h"
 #include "ephy-bookmarks-dialog.h"
-#include "ephy-browser-action.h"
 #include "ephy-desktop-utils.h"
 #include "ephy-downloads-paintable.h"
 #include "ephy-downloads-popover.h"
 #include "ephy-embed-container.h"
 #include "ephy-shell.h"
-#include "ephy-web-extension-manager.h"
 #include "ephy-window.h"
 
 #define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 /*ms */
@@ -140,18 +138,13 @@ remove_popup_webview (EphyActionBarEnd *action_bar_end)
 }
 
 static void
-show_browser_action_popup (EphyActionBarEnd  *action_bar_end,
-                           EphyBrowserAction *action)
+show_browser_action_popup (EphyActionBarEnd  *action_bar_end)
 {
-  EphyWebExtensionManager *manager = ephy_web_extension_manager_get_default ();
-  EphyWebExtension *web_extension = ephy_browser_action_get_web_extension (action);
-  GtkWidget *popup_view = ephy_web_extension_manager_create_browser_popup (manager, web_extension);
 
   gtk_box_append (GTK_BOX (action_bar_end->browser_actions_popup_view_box), popup_view);
   action_bar_end->browser_action_popup_web_view = popup_view;
 
-  gtk_label_set_text (GTK_LABEL (action_bar_end->browser_actions_popup_view_label),
-                      ephy_browser_action_get_title (action));
+  gtk_label_set_text (GTK_LABEL (action_bar_end->browser_actions_popup_view_label));
 
   gtk_stack_set_visible_child (GTK_STACK (action_bar_end->browser_actions_stack),
                                action_bar_end->browser_actions_popup_view_box);
@@ -167,9 +160,7 @@ browser_actions_popup_view_back_clicked_cb (GtkButton        *button,
 }
 
 static void
-show_browser_action_cb (EphyWebExtensionManager *manager,
-                        EphyBrowserAction       *action,
-                        EphyActionBarEnd        *action_bar_end)
+show_browser_action_cb (EphyActionBarEnd           *action_bar_end)
 {
   GtkWindow *parent_window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (action_bar_end)));
   GtkWindow *active_window = gtk_application_get_active_window (GTK_APPLICATION (g_application_get_default ()));
@@ -182,23 +173,19 @@ show_browser_action_cb (EphyWebExtensionManager *manager,
 
   remove_popup_webview (action_bar_end);
   gtk_menu_button_popdown (GTK_MENU_BUTTON (action_bar_end->browser_actions_button));
-  show_browser_action_popup (action_bar_end, action);
+  show_browser_action_popup (action_bar_end);
 }
 
 static void
 browser_actions_row_activated_cb (GtkListBox           *listbox,
-                                  EphyBrowserActionRow *row,
                                   EphyActionBarEnd     *action_bar_end)
 {
-  EphyBrowserAction *action = ephy_browser_action_row_get_browser_action (row);
-
   /* If it was handled we are done, otherwise we have to show a popup. */
-  if (ephy_browser_action_activate (action)) {
+
     gtk_menu_button_popdown (GTK_MENU_BUTTON (action_bar_end->browser_actions_button));
     return;
-  }
 
-  show_browser_action_popup (action_bar_end, action);
+  show_browser_action_popup (action_bar_end);
 }
 
 static void
@@ -294,7 +281,6 @@ ephy_action_bar_end_init (EphyActionBarEnd *action_bar_end)
 {
   GObject *object = G_OBJECT (action_bar_end);
   EphyDownloadsManager *downloads_manager;
-  EphyWebExtensionManager *extension_manager;
   EphyEmbedShell *embed_shell;
 
   gtk_widget_init_template (GTK_WIDGET (action_bar_end));
@@ -341,12 +327,8 @@ ephy_action_bar_end_init (EphyActionBarEnd *action_bar_end)
                            G_CALLBACK (show_downloads_cb),
                            object, G_CONNECT_DEFAULT);
 
-  extension_manager = ephy_web_extension_manager_get_default ();
-  g_signal_connect_object (extension_manager, "show-browser-action",
-                           G_CALLBACK (show_browser_action_cb),
+  g_signal_connect_object (G_CALLBACK (show_browser_action_cb),
                            object, G_CONNECT_DEFAULT);
-
-  set_browser_actions (action_bar_end, ephy_web_extension_manager_get_browser_actions (extension_manager));
 
   g_signal_connect (action_bar_end->browser_actions_popover, "notify::visible",
                     G_CALLBACK (browser_action_popover_visible_changed_cb),
@@ -381,10 +363,9 @@ ephy_action_bar_end_get_downloads_revealer (EphyActionBarEnd *action_bar_end)
 }
 
 GtkWidget *
-create_browser_action_item_widget (EphyBrowserAction *action,
-                                   gpointer           user_data)
+create_browser_action_item_widget (gpointer           user_data)
 {
-  return ephy_browser_action_row_new (action);
+
 }
 
 static void

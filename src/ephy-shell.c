@@ -57,14 +57,12 @@
 
 struct _EphyShell {
   EphyEmbedShell parent_instance;
-
   EphySession *session;
   EphySyncService *sync_service;
   GObject *lockdown;
   EphyBookmarksManager *bookmarks_manager;
   EphyHistoryManager *history_manager;
   EphyOpenTabsManager *open_tabs_manager;
-  EphyWebExtensionManager *web_extension_manager;
   GNetworkMonitor *network_monitor;
   GtkWidget *history_dialog;
   GtkWidget *firefox_sync_dialog;
@@ -73,7 +71,6 @@ struct _EphyShell {
   EphyShellStartupContext *remote_startup_context;
   GSList *open_uris_idle_ids;
   EphyWebApplication *webapp;
-
   gchar *open_notification_id;
   gboolean startup_finished;
   gboolean checking_modified_forms;
@@ -360,24 +357,6 @@ launch_app (GSimpleAction *action,
 }
 
 static void
-webextension_action (GSimpleAction *action,
-                     GVariant      *parameter,
-                     gpointer       user_data)
-{
-  EphyWebExtensionManager *manager = ephy_web_extension_manager_get_default ();
-  ephy_web_extension_manager_handle_notifications_action (manager, parameter);
-}
-
-static void
-webextension_context_menu_action (GSimpleAction *action,
-                                  GVariant      *parameter,
-                                  gpointer       user_data)
-{
-  EphyWebExtensionManager *manager = ephy_web_extension_manager_get_default ();
-  ephy_web_extension_manager_handle_context_menu_action (manager, parameter);
-}
-
-static void
 close_all_tabs (GSimpleAction *action,
                 GVariant      *parameter,
                 gpointer       user_data)
@@ -440,8 +419,6 @@ static GActionEntry app_entries[] = {
   { "quit", quit_application, NULL, NULL, NULL },
   { "show-downloads", show_downloads, NULL, NULL, NULL },
   { "launch-app", launch_app, "s", NULL, NULL },
-  { "webextension-notification", webextension_action, "(ssi)", NULL, NULL },
-  { "webextension-context-menu", webextension_context_menu_action, "(sss)", NULL, NULL },
   { "close-all-tabs", close_all_tabs, NULL, NULL, NULL },
 };
 
@@ -1028,7 +1005,6 @@ ephy_shell_dispose (GObject *object)
   g_clear_object (&shell->bookmarks_manager);
   g_clear_object (&shell->history_manager);
   g_clear_object (&shell->open_tabs_manager);
-  g_clear_object (&shell->web_extension_manager);
   g_clear_pointer (&shell->webapp, ephy_web_application_free);
 
   if (shell->open_notification_id) {
@@ -1651,8 +1627,6 @@ ephy_shell_open_uris_idle (OpenURIsData *data)
   EphyEmbedShellMode mode;
   EphyNewTabFlags page_flags = 0;
   gboolean reusing_empty_tab = FALSE;
-  const char *url;
-  gboolean url_is_xpi;
 
   mode = ephy_embed_shell_get_mode (EPHY_EMBED_SHELL (data->shell));
 
@@ -1668,9 +1642,8 @@ ephy_shell_open_uris_idle (OpenURIsData *data)
   }
 
   url = data->uris ? data->uris[data->current_uri] : NULL;
-  url_is_xpi = url && g_str_has_prefix (url, "file:") && g_str_has_suffix (url, ".xpi");
 
-  if (!reusing_empty_tab && !url_is_xpi) {
+  if (!reusing_empty_tab) {
     embed = ephy_shell_new_tab_full (data->shell,
                                      NULL, NULL,
                                      data->window,
@@ -1678,10 +1651,7 @@ ephy_shell_open_uris_idle (OpenURIsData *data)
                                      data->flags | page_flags);
   }
 
-  if (url_is_xpi) {
-    g_autoptr (GFile) xpi_file = g_file_new_for_uri (url);
-    ephy_web_extension_manager_install (ephy_web_extension_manager_get_default (), xpi_file);
-  } else if (url && url[0] != '\0' && ephy_embed_utils_address_is_valid (url)) {
+  if (url && url[0] != '\0' && ephy_embed_utils_address_is_valid (url)) {
     ephy_web_view_load_url (ephy_embed_get_web_view (embed), url);
 
     /* When reusing an empty tab, the focus is in the location entry */
@@ -1698,12 +1668,10 @@ ephy_shell_open_uris_idle (OpenURIsData *data)
       ephy_window_focus_location_entry (data->window);
   }
 
-  if (!url_is_xpi) {
-    /* Set address from the very beginning. Looks odd in app mode if it appears later on. */
-    header_bar = EPHY_HEADER_BAR (ephy_window_get_header_bar (data->window));
-    title_widget = ephy_header_bar_get_title_widget (header_bar);
-    ephy_title_widget_set_address (title_widget, url);
-  }
+  /* Set address from the very beginning. Looks odd in app mode if it appears later on. */
+  header_bar = EPHY_HEADER_BAR (ephy_window_get_header_bar (data->window));
+  title_widget = ephy_header_bar_get_title_widget (header_bar);
+  ephy_title_widget_set_address (title_widget, url);
 
   data->current_uri++;
   data->previous_embed = embed;
