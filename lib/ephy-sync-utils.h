@@ -24,9 +24,6 @@
 
 G_BEGIN_DECLS
 
-#define EPHY_SYNC_DEVICE_ID_LEN   32
-#define EPHY_SYNC_BSO_ID_LEN      12
-
 char     *ephy_sync_utils_encode_hex                    (const guint8 *data,
                                                          gsize         data_len);
 guint8   *ephy_sync_utils_decode_hex                    (const char   *hex);
@@ -43,13 +40,6 @@ void      ephy_sync_utils_generate_random_bytes         (void   *random_ctx,
                                                          guint8 *out);
 char     *ephy_sync_utils_get_random_sync_id            (void);
 
-void      ephy_sync_utils_set_device_id                 (const char *id);
-char     *ephy_sync_utils_get_device_id                 (void);
-char     *ephy_sync_utils_get_device_bso_id             (void);
-
-void      ephy_sync_utils_set_device_name               (const char *name);
-char     *ephy_sync_utils_get_device_name               (void);
-
 gboolean  ephy_sync_utils_sync_with_firefox             (void);
 
 gboolean  ephy_sync_utils_bookmarks_sync_is_enabled     (void);
@@ -63,15 +53,5 @@ void      ephy_sync_utils_set_passwords_sync_time       (gint64 time);
 gint64    ephy_sync_utils_get_passwords_sync_time       (void);
 void      ephy_sync_utils_set_passwords_sync_is_initial (gboolean is_initial);
 gboolean  ephy_sync_utils_get_passwords_sync_is_initial (void);
-
-gboolean  ephy_sync_utils_history_sync_is_enabled       (void);
-void      ephy_sync_utils_set_history_sync_time         (gint64 time);
-gint64    ephy_sync_utils_get_history_sync_time         (void);
-void      ephy_sync_utils_set_history_sync_is_initial   (gboolean is_initial);
-gboolean  ephy_sync_utils_get_history_sync_is_initial   (void);
-
-gboolean  ephy_sync_utils_open_tabs_sync_is_enabled     (void);
-void      ephy_sync_utils_set_open_tabs_sync_time       (gint64 time);
-gint64    ephy_sync_utils_get_open_tabs_sync_time       (void);
 
 G_END_DECLS

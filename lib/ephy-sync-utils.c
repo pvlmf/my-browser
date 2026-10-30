@@ -192,74 +192,17 @@ ephy_sync_utils_get_random_sync_id (void)
 
   /* The sync id is a base64-urlsafe string. Base64 uses 4 chars to represent 3 bytes,
    * therefore we need ceil(len * 3 / 4) bytes to cover the requested length. */
-  bytes_len = (EPHY_SYNC_BSO_ID_LEN + 3) / 4 * 3;
+  bytes_len = (12 + 3) / 4 * 3;
   bytes = g_malloc (bytes_len);
 
   ephy_sync_utils_generate_random_bytes (NULL, bytes_len, bytes);
   base64 = ephy_sync_utils_base64_urlsafe_encode (bytes, bytes_len, FALSE);
-  id = g_strndup (base64, EPHY_SYNC_BSO_ID_LEN);
+  id = g_strndup (base64, 12);
 
   g_free (base64);
   g_free (bytes);
 
   return id;
-}
-
-void
-ephy_sync_utils_set_device_id (const char *id)
-{
-  id = id ? id : "";
-  g_settings_set_string (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_DEVICE_ID, id);
-}
-
-char *
-ephy_sync_utils_get_device_id (void)
-{
-  return g_settings_get_string (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_DEVICE_ID);
-}
-
-char *
-ephy_sync_utils_get_device_bso_id (void)
-{
-  char *device_bso_id;
-  char *device_id;
-
-  device_id = g_settings_get_string (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_DEVICE_ID);
-  if (g_strcmp0 (device_id, "") == 0) {
-    /* This should never be reached. */
-    return g_strnfill (EPHY_SYNC_BSO_ID_LEN, '0');
-  }
-
-  device_bso_id = g_strndup (device_id, EPHY_SYNC_BSO_ID_LEN);
-  g_free (device_id);
-
-  return device_bso_id;
-}
-
-void
-ephy_sync_utils_set_device_name (const char *name)
-{
-  name = name ? name : "";
-  g_settings_set_string (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_DEVICE_NAME, name);
-}
-
-char *
-ephy_sync_utils_get_device_name (void)
-{
-  char *name;
-
-  name = g_settings_get_string (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_DEVICE_NAME);
-  if (g_strcmp0 (name, "") != 0)
-    return name;
-
-  g_free (name);
-  /* Translators: First %s is the name of the user currently logged in on the
-   * machine. The second %s is the machine's name. You can use the variables
-   * in a different order by changing them to %2$s and %1$s. */
-  name = g_strdup_printf (_("%s’s GNOME Web on %s"), g_get_user_name (), g_get_host_name ());
-  g_settings_set_string (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_DEVICE_NAME, name);
-
-  return name;
 }
 
 gboolean
@@ -326,52 +269,4 @@ gboolean
 ephy_sync_utils_get_passwords_sync_is_initial (void)
 {
   return g_settings_get_boolean (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_PASSWORDS_INITIAL);
-}
-
-gboolean
-ephy_sync_utils_history_sync_is_enabled (void)
-{
-  return g_settings_get_boolean (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_HISTORY_ENABLED);
-}
-
-void
-ephy_sync_utils_set_history_sync_time (gint64 time)
-{
-  g_settings_set_int64 (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_HISTORY_TIME, time);
-}
-
-gint64
-ephy_sync_utils_get_history_sync_time (void)
-{
-  return g_settings_get_int64 (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_HISTORY_TIME);
-}
-
-void
-ephy_sync_utils_set_history_sync_is_initial (gboolean is_initial)
-{
-  g_settings_set_boolean (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_HISTORY_INITIAL, is_initial);
-}
-
-gboolean
-ephy_sync_utils_get_history_sync_is_initial (void)
-{
-  return g_settings_get_boolean (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_HISTORY_INITIAL);
-}
-
-gboolean
-ephy_sync_utils_open_tabs_sync_is_enabled (void)
-{
-  return g_settings_get_boolean (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_OPEN_TABS_ENABLED);
-}
-
-void
-ephy_sync_utils_set_open_tabs_sync_time (gint64 time)
-{
-  g_settings_set_int64 (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_OPEN_TABS_TIME, time);
-}
-
-gint64
-ephy_sync_utils_get_open_tabs_sync_time (void)
-{
-  return g_settings_get_int64 (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_OPEN_TABS_TIME);
 }

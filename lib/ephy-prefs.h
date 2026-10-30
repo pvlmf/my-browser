@@ -174,8 +174,6 @@ static const char * const ephy_prefs_web_schema[] = {
 #define EPHY_PREFS_LOCKDOWN_CONTEXT_MENU      "disable-context-menu"
 
 #define EPHY_PREFS_SYNC_SCHEMA            "org.gnome.Epiphany.sync"
-#define EPHY_PREFS_SYNC_DEVICE_ID         "sync-device-id"
-#define EPHY_PREFS_SYNC_DEVICE_NAME       "sync-device-name"
 #define EPHY_PREFS_SYNC_WITH_FIREFOX      "sync-with-firefox"
 #define EPHY_PREFS_SYNC_BOOKMARKS_ENABLED "sync-bookmarks-enabled"
 #define EPHY_PREFS_SYNC_BOOKMARKS_TIME    "sync-bookmarks-time"
@@ -183,11 +181,6 @@ static const char * const ephy_prefs_web_schema[] = {
 #define EPHY_PREFS_SYNC_PASSWORDS_ENABLED "sync-passwords-enabled"
 #define EPHY_PREFS_SYNC_PASSWORDS_TIME    "sync-passwords-time"
 #define EPHY_PREFS_SYNC_PASSWORDS_INITIAL "sync-passwords-initial"
-#define EPHY_PREFS_SYNC_HISTORY_ENABLED   "sync-history-enabled"
-#define EPHY_PREFS_SYNC_HISTORY_TIME      "sync-history-time"
-#define EPHY_PREFS_SYNC_HISTORY_INITIAL   "sync-history-initial"
-#define EPHY_PREFS_SYNC_OPEN_TABS_ENABLED "sync-open-tabs-enabled"
-#define EPHY_PREFS_SYNC_OPEN_TABS_TIME    "sync-open-tabs-time"
 
 #define EPHY_PREFS_WEB_APP_SCHEMA                  "org.gnome.Epiphany.webapp"
 #define EPHY_PREFS_WEB_APP_ADDITIONAL_URLS         "additional-urls"
