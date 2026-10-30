@@ -137,18 +137,7 @@ remove_popup_webview (EphyActionBarEnd *action_bar_end)
   }
 }
 
-static void
-show_browser_action_popup (EphyActionBarEnd  *action_bar_end)
-{
 
-  gtk_box_append (GTK_BOX (action_bar_end->browser_actions_popup_view_box), popup_view);
-  action_bar_end->browser_action_popup_web_view = popup_view;
-
-  gtk_label_set_text (GTK_LABEL (action_bar_end->browser_actions_popup_view_label));
-
-  gtk_stack_set_visible_child (GTK_STACK (action_bar_end->browser_actions_stack),
-                               action_bar_end->browser_actions_popup_view_box);
-}
 
 static void
 browser_actions_popup_view_back_clicked_cb (GtkButton        *button,
@@ -173,7 +162,6 @@ show_browser_action_cb (EphyActionBarEnd           *action_bar_end)
 
   remove_popup_webview (action_bar_end);
   gtk_menu_button_popdown (GTK_MENU_BUTTON (action_bar_end->browser_actions_button));
-  show_browser_action_popup (action_bar_end);
 }
 
 static void
@@ -184,8 +172,6 @@ browser_actions_row_activated_cb (GtkListBox           *listbox,
 
     gtk_menu_button_popdown (GTK_MENU_BUTTON (action_bar_end->browser_actions_button));
     return;
-
-  show_browser_action_popup (action_bar_end);
 }
 
 static void
