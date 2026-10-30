@@ -2,18 +2,12 @@ libephysync_sources = [
   'ephy-password-export.c',
   'ephy-password-import.c',
   'ephy-password-manager.c',
-  'ephy-password-record.c',
-  'ephy-sync-crypto.c',
-  'ephy-synchronizable.c',
-  'ephy-tabs-catalog.c'
+  'ephy-password-record.c'
 ]
 
 libephysync_deps = [
   ephymisc_dep,
   glib_dep,
-  gmp_dep,
-  hogweed_dep,
-  json_glib_dep,
   libsecret_dep,
   nettle_dep,
 ]

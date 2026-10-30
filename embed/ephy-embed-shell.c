@@ -46,7 +46,6 @@
 #include "ephy-reader-handler.h"
 #include "ephy-settings.h"
 #include "ephy-snapshot-service.h"
-#include "ephy-tabs-catalog.h"
 #include "ephy-uri-helpers.h"
 #include "ephy-view-source-handler.h"
 #include "ephy-web-app-utils.h"
@@ -94,12 +93,7 @@ static GParamSpec *object_properties[PROP_MODE + 1] = { NULL, };
 
 static EphyEmbedShell *embed_shell = NULL;
 
-static void ephy_embed_shell_tabs_catalog_iface_init (EphyTabsCatalogInterface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (EphyEmbedShell, ephy_embed_shell, ADW_TYPE_APPLICATION,
-                         G_ADD_PRIVATE (EphyEmbedShell)
-                         G_IMPLEMENT_INTERFACE (EPHY_TYPE_TABS_CATALOG,
-                                                ephy_embed_shell_tabs_catalog_iface_init))
+G_DEFINE_TYPE_WITH_PRIVATE (EphyEmbedShell, ephy_embed_shell, ADW_TYPE_APPLICATION)
 
 static EphyWebView *
 ephy_embed_shell_get_view_for_page_id (EphyEmbedShell *self,
@@ -131,49 +125,6 @@ ephy_embed_shell_get_view_for_page_id (EphyEmbedShell *self,
   }
 
   return NULL;
-}
-
-static GList *
-tabs_catalog_get_tabs_info (EphyTabsCatalog *catalog)
-{
-  WebKitFaviconDatabase *database;
-  GList *windows;
-  g_autoptr (GList) tabs = NULL;
-  GList *tabs_info = NULL;
-  const char *title;
-  const char *url;
-  g_autofree char *favicon = NULL;
-
-  g_assert ((gpointer)catalog == (gpointer)embed_shell);
-
-  windows = gtk_application_get_windows (GTK_APPLICATION (embed_shell));
-  database = ephy_embed_shell_get_favicon_database (embed_shell);
-
-  for (GList *l = windows; l && l->data; l = l->next) {
-    tabs = ephy_embed_container_get_children (l->data);
-
-    for (GList *t = tabs; t && t->data; t = t->next) {
-      title = ephy_embed_get_title (t->data);
-
-      if (g_strcmp0 (title, _(BLANK_PAGE_TITLE)) == 0 ||
-          g_strcmp0 (title, _(NEW_TAB_PAGE_TITLE)) == 0)
-        continue;
-
-      url = ephy_web_view_get_display_address (ephy_embed_get_web_view (t->data));
-      favicon = webkit_favicon_database_get_favicon_uri (database, url);
-
-      tabs_info = g_list_prepend (tabs_info,
-                                  ephy_tab_info_new (title, url, favicon));
-    }
-  }
-
-  return tabs_info;
-}
-
-static void
-ephy_embed_shell_tabs_catalog_iface_init (EphyTabsCatalogInterface *iface)
-{
-  iface->get_tabs_info = tabs_catalog_get_tabs_info;
 }
 
 static void

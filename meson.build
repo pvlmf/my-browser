@@ -95,7 +95,6 @@ gsettings_desktop_schemas = dependency('gsettings-desktop-schemas')
 gstreamer_dep = dependency('gstreamer-1.0')
 gtk_dep = dependency('gtk4', version: gtk_requirement)
 gtk_unix_print_dep = dependency('gtk4-unix-print', version: gtk_requirement)
-hogweed_dep = dependency('hogweed', version: nettle_requirement)
 iso_codes_dep = dependency('iso-codes', version: '>= 0.35')
 json_glib_dep = dependency('json-glib-1.0', version: '>= 1.6')
 libarchive_dep = dependency('libarchive')
@@ -134,20 +133,6 @@ config_h = declare_dependency(
 )
 
 cc = meson.get_compiler('c')
-
-mini_gmp_test = '''
-#include <nettle/bignum.h>
-
-#if !NETTLE_USE_MINI_GMP
-# error "gmp is needed"
-#endif
-'''
-
-if cc.compiles(mini_gmp_test, dependencies: hogweed_dep)
-  gmp_dep = dependency('', required: false)
-else
-  gmp_dep = cc.find_library('gmp')
-endif
 
 m_dep = cc.find_library('m', required: false)
 
