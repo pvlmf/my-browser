@@ -797,6 +797,13 @@ ephy_autofill_js_get_field_value (EphyAutofillField        field,
 }
 
 static void
+ephy_autofill_js_change_value (JSCValue   *js_input_element,
+                               const char *value)
+{
+  webkit_web_form_manager_input_element_auto_fill (js_input_element, value);
+}
+
+static void
 private_script_world_window_object_cleared_cb (WebKitScriptWorld       *world,
                                                WebKitWebPage           *page,
                                                WebKitFrame             *frame,
