@@ -23,13 +23,10 @@
 #include "ephy-sync-utils.h"
 
 #include <errno.h>
-#include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
 
 #include <glib/gi18n.h>
-#include <json-glib/json-glib.h>
-#include <webkit/webkit.h>
 
 #include "ephy-settings.h"
 #if defined(__linux__)
@@ -39,20 +36,6 @@
 #endif
 
 static const char hex_digits[] = "0123456789abcdef";
-
-const SecretSchema *
-ephy_sync_utils_get_secret_schema (void)
-{
-  static const SecretSchema schema = {
-    "org.epiphany.SyncSecrets", SECRET_SCHEMA_NONE,
-    {
-      { EPHY_SYNC_SECRET_ACCOUNT_KEY, SECRET_SCHEMA_ATTRIBUTE_STRING },
-      { "NULL", 0 },
-    }
-  };
-
-  return &schema;
-}
 
 char *
 ephy_sync_utils_encode_hex (const guint8 *data,
@@ -200,14 +183,6 @@ ephy_sync_utils_generate_random_bytes (void   *random_ctx,
 }
 
 char *
-ephy_sync_utils_get_audience (const char *url)
-{
-  g_autoptr (WebKitSecurityOrigin) origin = webkit_security_origin_new_for_uri (url);
-
-  return webkit_security_origin_to_string (origin);
-}
-
-char *
 ephy_sync_utils_get_random_sync_id (void)
 {
   char *id;
@@ -228,46 +203,6 @@ ephy_sync_utils_get_random_sync_id (void)
   g_free (bytes);
 
   return id;
-}
-
-char *
-ephy_sync_utils_make_client_record (const char *device_bso_id,
-                                    const char *device_id,
-                                    const char *device_name)
-{
-  JsonNode *node;
-  JsonObject *object;
-  JsonArray *array;
-  char *protocol;
-  char *retval;
-
-  g_assert (device_bso_id);
-  g_assert (device_id);
-  g_assert (device_name);
-
-  array = json_array_new ();
-  protocol = g_strdup_printf ("1.%" PRIu32, EPHY_SYNC_STORAGE_VERSION);
-  json_array_add_string_element (array, protocol);
-
-  object = json_object_new ();
-  json_object_set_string_member (object, "id", device_bso_id);
-  json_object_set_string_member (object, "fxaDeviceId", device_id);
-  json_object_set_string_member (object, "name", device_name);
-  json_object_set_string_member (object, "type", "desktop");
-  json_object_set_string_member (object, "version", VERSION);
-  json_object_set_array_member (object, "protocols", array);
-  json_object_set_string_member (object, "os", "Linux");
-  json_object_set_string_member (object, "appPackage", "org.gnome.epiphany");
-  json_object_set_string_member (object, "application", "Epiphany");
-
-  node = json_node_new (JSON_NODE_OBJECT);
-  json_node_take_object (node, object);
-  retval = json_to_string (node, FALSE);
-
-  g_free (protocol);
-  json_node_unref (node);
-
-  return retval;
 }
 
 void
@@ -325,59 +260,6 @@ ephy_sync_utils_get_device_name (void)
   g_settings_set_string (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_DEVICE_NAME, name);
 
   return name;
-}
-
-void
-ephy_sync_utils_set_sync_user (const char *user)
-{
-  user = user ? user : "";
-  g_settings_set_string (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_USER, user);
-}
-
-char *
-ephy_sync_utils_get_sync_user (void)
-{
-  char *user = g_settings_get_string (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_USER);
-
-  if (g_strcmp0 (user, "") == 0) {
-    g_free (user);
-    return NULL;
-  }
-
-  return user;
-}
-
-gboolean
-ephy_sync_utils_user_is_signed_in (void)
-{
-  char *user = ephy_sync_utils_get_sync_user ();
-
-  if (user) {
-    g_free (user);
-    return TRUE;
-  }
-
-  return FALSE;
-}
-
-void
-ephy_sync_utils_set_sync_time (gint64 time)
-{
-  time = time > 0 ? time : 0;
-  g_settings_set_int64 (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_TIME, time);
-}
-
-gint64
-ephy_sync_utils_get_sync_time (void)
-{
-  return g_settings_get_int64 (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_TIME);
-}
-
-guint
-ephy_sync_utils_get_sync_frequency (void)
-{
-  /* Minutes. */
-  return g_settings_get_uint (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_FREQUENCY);
 }
 
 gboolean
@@ -492,16 +374,4 @@ gint64
 ephy_sync_utils_get_open_tabs_sync_time (void)
 {
   return g_settings_get_int64 (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_OPEN_TABS_TIME);
-}
-
-char *
-ephy_sync_utils_get_token_server (void)
-{
-  return g_settings_get_string (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_TOKEN_SERVER);
-}
-
-char *
-ephy_sync_utils_get_accounts_server (void)
-{
-  return g_settings_get_string (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_ACCOUNTS_SERVER);
 }
