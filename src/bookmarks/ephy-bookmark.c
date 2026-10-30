@@ -29,11 +29,6 @@
 #include "ephy-sync-utils.h"
 #include "ephy-synchronizable.h"
 
-#define BOOKMARK_TYPE_VAL            "bookmark"
-#define BOOKMARK_PARENT_ID_VAL       "toolbar"
-#define BOOKMARK_PARENT_NAME_VAL     "Bookmarks Toolbar"
-#define BOOKMARK_LOAD_IN_SIDEBAR_VAL FALSE
-
 struct _EphyBookmark {
   GObject parent_instance;
 
@@ -44,12 +39,6 @@ struct _EphyBookmark {
 
   /* Stable local bookmark identifier. */
   char *id;
-
-  /* Firefox Sync serialization fields. */
-  char *type;
-  char *parent_id;
-  char *parent_name;
-  gboolean load_in_sidebar;
 
   /* Retained in the local GVDB format for compatibility. */
   gint64 server_time_modified;
@@ -66,14 +55,10 @@ G_DEFINE_FINAL_TYPE_WITH_CODE (EphyBookmark, ephy_bookmark, G_TYPE_OBJECT,
 
 typedef enum {
   PROP_TIME_ADDED = 1,      /* Epiphany */
-  PROP_ID,              /* Local and Firefox Sync */
-  PROP_TITLE,           /* Epiphany && Firefox Sync */
-  PROP_BMK_URI,         /* Epiphany && Firefox Sync */
-  PROP_TAGS,            /* Epiphany && Firefox Sync */
-  PROP_TYPE,            /* Firefox Sync */
-  PROP_PARENT_ID,       /* Firefox Sync */
-  PROP_PARENT_NAME,     /* Firefox Sync */
-  PROP_LOAD_IN_SIDEBAR, /* Firefox Sync */
+  PROP_ID,              /* Epiphany */
+  PROP_TITLE,           /* Epiphany */
+  PROP_BMK_URI,         /* Epiphany */
+  PROP_TAGS,            /* Epiphany */
 } EphyBookmarkProps;
 
 enum {
@@ -82,7 +67,7 @@ enum {
   LAST_SIGNAL
 };
 
-static GParamSpec *obj_properties[PROP_LOAD_IN_SIDEBAR + 1];
+static GParamSpec *obj_properties[PROP_TAGS + 1];
 static guint signals[LAST_SIGNAL];
 
 static void
@@ -108,21 +93,6 @@ ephy_bookmark_set_property (GObject      *object,
       self->tags = g_value_get_pointer (value);
       if (!self->tags)
         self->tags = g_sequence_new (g_free);
-      break;
-    case PROP_TYPE:
-      g_free (self->type);
-      self->type = g_value_dup_string (value);
-      break;
-    case PROP_PARENT_ID:
-      g_free (self->parent_id);
-      self->parent_id = g_value_dup_string (value);
-      break;
-    case PROP_PARENT_NAME:
-      g_free (self->parent_name);
-      self->parent_name = g_value_dup_string (value);
-      break;
-    case PROP_LOAD_IN_SIDEBAR:
-      self->load_in_sidebar = g_value_get_boolean (value);
       break;
     case PROP_ID:
       ephy_bookmark_set_id (self, g_value_get_string (value));
@@ -151,18 +121,6 @@ ephy_bookmark_get_property (GObject    *object,
     case PROP_TAGS:
       g_value_set_pointer (value, ephy_bookmark_get_tags (self));
       break;
-    case PROP_TYPE:
-      g_value_set_string (value, self->type);
-      break;
-    case PROP_PARENT_ID:
-      g_value_set_string (value, self->parent_id);
-      break;
-    case PROP_PARENT_NAME:
-      g_value_set_string (value, self->parent_name);
-      break;
-    case PROP_LOAD_IN_SIDEBAR:
-      g_value_set_boolean (value, self->load_in_sidebar);
-      break;
     case PROP_ID:
       g_value_set_string (value, ephy_bookmark_get_id (self));
       break;
@@ -180,9 +138,6 @@ ephy_bookmark_finalize (GObject *object)
   g_sequence_free (self->tags);
 
   g_free (self->id);
-  g_free (self->type);
-  g_free (self->parent_id);
-  g_free (self->parent_name);
 
   G_OBJECT_CLASS (ephy_bookmark_parent_class)->finalize (object);
 }
@@ -227,30 +182,6 @@ ephy_bookmark_class_init (EphyBookmarkClass *klass)
                           NULL, NULL,
                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 
-  obj_properties[PROP_TYPE] =
-    g_param_spec_string ("type",
-                         NULL, NULL,
-                         "default",
-                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
-
-  obj_properties[PROP_PARENT_ID] =
-    g_param_spec_string ("parentid",
-                         NULL, NULL,
-                         "default",
-                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
-
-  obj_properties[PROP_PARENT_NAME] =
-    g_param_spec_string ("parentName",
-                         NULL, NULL,
-                         "default",
-                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
-
-  obj_properties[PROP_LOAD_IN_SIDEBAR] =
-    g_param_spec_boolean ("loadInSidebar",
-                          NULL, NULL,
-                          TRUE,
-                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
-
   g_object_class_install_properties (object_class, G_N_ELEMENTS (obj_properties), obj_properties);
 
   signals[TAG_ADDED] =
@@ -289,10 +220,6 @@ ephy_bookmark_new (const char *url,
                        "title", title,
                        "bmkUri", url,
                        "tags", tags,
-                       "type", BOOKMARK_TYPE_VAL,
-                       "parentid", BOOKMARK_PARENT_ID_VAL,
-                       "parentName", BOOKMARK_PARENT_NAME_VAL,
-                       "loadInSidebar", BOOKMARK_LOAD_IN_SIDEBAR_VAL,
                        "id", id,
                        NULL);
 }
