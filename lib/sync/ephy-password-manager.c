@@ -965,7 +965,7 @@ ephy_password_manager_forget_all (EphyPasswordManager *self)
 static const char *
 synchronizable_manager_get_collection_name (EphySynchronizableManager *manager)
 {
-  return ephy_sync_utils_sync_with_firefox () ? "passwords" : "ephy-passwords";
+  return "ephy-passwords";
 }
 
 static GType

@@ -369,11 +369,6 @@
 		</key>
 	</schema>
 	<schema path="/org/gnome/epiphany/sync/" id="org.gnome.Epiphany.sync">
-		<key type="b" name="sync-with-firefox">
-			<default>true</default>
-			<summary>Sync data with Firefox</summary>
-			<description>TRUE if Ephy collections should be synced with Firefox collections, FALSE otherwise.</description>
-		</key>
 		<key type="b" name="sync-bookmarks-enabled">
 			<default>false</default>
 			<summary>Enable bookmarks sync</summary>

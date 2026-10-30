@@ -206,12 +206,6 @@ ephy_sync_utils_get_random_sync_id (void)
 }
 
 gboolean
-ephy_sync_utils_sync_with_firefox (void)
-{
-  return g_settings_get_boolean (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_WITH_FIREFOX);
-}
-
-gboolean
 ephy_sync_utils_bookmarks_sync_is_enabled (void)
 {
   return g_settings_get_boolean (EPHY_SETTINGS_SYNC, EPHY_PREFS_SYNC_BOOKMARKS_ENABLED);

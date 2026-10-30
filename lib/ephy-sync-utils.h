@@ -40,8 +40,6 @@ void      ephy_sync_utils_generate_random_bytes         (void   *random_ctx,
                                                          guint8 *out);
 char     *ephy_sync_utils_get_random_sync_id            (void);
 
-gboolean  ephy_sync_utils_sync_with_firefox             (void);
-
 gboolean  ephy_sync_utils_bookmarks_sync_is_enabled     (void);
 void      ephy_sync_utils_set_bookmarks_sync_time       (gint64 time);
 gint64    ephy_sync_utils_get_bookmarks_sync_time       (void);

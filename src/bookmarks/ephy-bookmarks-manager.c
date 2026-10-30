@@ -900,7 +900,7 @@ list_model_iface_init (GListModelInterface *iface)
 static const char *
 synchronizable_manager_get_collection_name (EphySynchronizableManager *manager)
 {
-  return ephy_sync_utils_sync_with_firefox () ? "bookmarks" : "ephy-bookmarks";
+  return "ephy-bookmarks";
 }
 
 static GType
