@@ -21,8 +21,6 @@
 #include "config.h"
 #include "ephy-password-record.h"
 
-#include "ephy-synchronizable.h"
-
 struct _EphyPasswordRecord {
   GObject parent_instance;
 
@@ -35,17 +33,9 @@ struct _EphyPasswordRecord {
   char *password_field;
   guint64 time_created;
   guint64 time_password_changed;
-  gint64 server_time_modified;
 };
 
-static void json_serializable_iface_init (JsonSerializableIface *iface);
-static void ephy_synchronizable_iface_init (EphySynchronizableInterface *iface);
-
-G_DEFINE_FINAL_TYPE_WITH_CODE (EphyPasswordRecord, ephy_password_record, G_TYPE_OBJECT,
-                               G_IMPLEMENT_INTERFACE (JSON_TYPE_SERIALIZABLE,
-                                                      json_serializable_iface_init)
-                               G_IMPLEMENT_INTERFACE (EPHY_TYPE_SYNCHRONIZABLE,
-                                                      ephy_synchronizable_iface_init))
+G_DEFINE_FINAL_TYPE (EphyPasswordRecord, ephy_password_record, G_TYPE_OBJECT)
 
 typedef enum {
   PROP_ID = 1,                    /* Firefox Sync */
@@ -277,7 +267,6 @@ ephy_password_record_copy (EphyPasswordRecord *self)
                                                          self->password_field,
                                                          self->time_created,
                                                          self->time_password_changed);
-  record->server_time_modified = self->server_time_modified;
   return record;
 }
 
@@ -352,73 +341,6 @@ ephy_password_record_get_time_password_changed (EphyPasswordRecord *self)
   g_assert (EPHY_IS_PASSWORD_RECORD (self));
 
   return self->time_password_changed;
-}
-
-static JsonNode *
-serializable_serialize_property (JsonSerializable *serializable,
-                                 const char       *name,
-                                 const GValue     *value,
-                                 GParamSpec       *pspec)
-{
-  /* Convert NULL to "", as Firefox expects empty strings for missing fields. */
-  if (G_VALUE_HOLDS_STRING (value) && !g_value_get_string (value)) {
-    JsonNode *node = json_node_new (JSON_NODE_VALUE);
-    json_node_set_string (node, "");
-    return node;
-  }
-
-  return json_serializable_default_serialize_property (serializable, name, value, pspec);
-}
-
-static gboolean
-serializable_deserialize_property (JsonSerializable *serializable,
-                                   const char       *name,
-                                   GValue           *value,
-                                   GParamSpec       *pspec,
-                                   JsonNode         *node)
-{
-  /* Convert "" back to NULL. */
-  if (G_VALUE_HOLDS_STRING (value) && g_strcmp0 (json_node_get_string (node), "") == 0) {
-    g_value_set_string (value, NULL);
-    return TRUE;
-  }
-
-  return json_serializable_default_deserialize_property (serializable, name, value, pspec, node);
-}
-
-static void
-json_serializable_iface_init (JsonSerializableIface *iface)
-{
-  iface->serialize_property = serializable_serialize_property;
-  iface->deserialize_property = serializable_deserialize_property;
-}
-
-static const char *
-synchronizable_get_id (EphySynchronizable *synchronizable)
-{
-  return ephy_password_record_get_id (EPHY_PASSWORD_RECORD (synchronizable));
-}
-
-static gint64
-synchronizable_get_server_time_modified (EphySynchronizable *synchronizable)
-{
-  return EPHY_PASSWORD_RECORD (synchronizable)->server_time_modified;
-}
-
-static void
-synchronizable_set_server_time_modified (EphySynchronizable *synchronizable,
-                                         gint64              server_time_modified)
-{
-  EPHY_PASSWORD_RECORD (synchronizable)->server_time_modified = server_time_modified;
-}
-
-static void
-ephy_synchronizable_iface_init (EphySynchronizableInterface *iface)
-{
-  iface->get_id = synchronizable_get_id;
-  iface->get_server_time_modified = synchronizable_get_server_time_modified;
-  iface->set_server_time_modified = synchronizable_set_server_time_modified;
-  iface->to_bso = ephy_synchronizable_default_to_bso;
 }
 
 void
