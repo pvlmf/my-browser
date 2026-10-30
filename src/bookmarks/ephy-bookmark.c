@@ -42,12 +42,16 @@ struct _EphyBookmark {
   GSequence *tags;
   gint64 time_added;
 
-  /* Firefox Sync specific fields. */
+  /* Stable local bookmark identifier. */
   char *id;
+
+  /* Firefox Sync serialization fields. */
   char *type;
   char *parent_id;
   char *parent_name;
   gboolean load_in_sidebar;
+
+  /* Retained in the local GVDB format for compatibility. */
   gint64 server_time_modified;
 };
 
@@ -62,7 +66,7 @@ G_DEFINE_FINAL_TYPE_WITH_CODE (EphyBookmark, ephy_bookmark, G_TYPE_OBJECT,
 
 typedef enum {
   PROP_TIME_ADDED = 1,      /* Epiphany */
-  PROP_ID,              /* Firefox Sync */
+  PROP_ID,              /* Local and Firefox Sync */
   PROP_TITLE,           /* Epiphany && Firefox Sync */
   PROP_BMK_URI,         /* Epiphany && Firefox Sync */
   PROP_TAGS,            /* Epiphany && Firefox Sync */
