@@ -1,5 +1,4 @@
 libephysync_sources = [
-  'debug/ephy-sync-debug.c',
   'ephy-history-manager.c',
   'ephy-history-record.c',
   'ephy-open-tabs-manager.c',
@@ -21,7 +20,6 @@ libephysync_deps = [
   hogweed_dep,
   json_glib_dep,
   libsecret_dep,
-  libsoup_dep,
   nettle_dep,
 ]
 
@@ -29,8 +27,7 @@ libephysync_includes = include_directories(
   '.',
   '..',
   '../history',
-  '../..',
-  'debug'
+  '../..'
 )
 
 libephysync = shared_library('ephysync',
