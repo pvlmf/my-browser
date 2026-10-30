@@ -1172,11 +1172,6 @@ update_security_status_for_committed_load (EphyWebView *view,
   if (view->loading_error_page)
     return;
 
-  if (g_str_has_prefix (uri, "ephy-webextension://")) {
-    /* Hidden WebExtension webview, ignoring */
-    return;
-  }
-
   root = gtk_widget_get_root (GTK_WIDGET (view));
   if (EPHY_IS_EMBED_CONTAINER (root))
     embed = EPHY_GET_EMBED_FROM_EPHY_WEB_VIEW (view);
