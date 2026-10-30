@@ -515,9 +515,6 @@ ephy_shell_startup (GApplication *application)
                               "enabled",
                               G_BINDING_SYNC_CREATE);
 
-      if (mode == EPHY_EMBED_SHELL_MODE_BROWSER) {
-        /* Create the sync service. */
-      }
     }
 
     /* Actions that are disabled in app mode */

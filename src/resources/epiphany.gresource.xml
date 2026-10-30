@@ -13,7 +13,6 @@
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/data-view.ui">resources/gtk/data-view.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/encoding-dialog.ui">resources/gtk/encoding-dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/encoding-row.ui">resources/gtk/encoding-row.ui</file>
-    <file preprocess="xml-stripblanks" compressed="true" alias="gtk/firefox-sync-dialog.ui">resources/gtk/firefox-sync-dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/history-dialog.ui">resources/gtk/history-dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/lang-row.ui">resources/gtk/lang-row.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/location-entry.ui">resources/gtk/location-entry.ui</file>
@@ -32,7 +31,6 @@
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/search-engine-row.ui">resources/gtk/search-engine-row.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/security-dialog.ui">resources/gtk/security-dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/site-menu-button.ui">resources/gtk/site-menu-button.ui</file>
-    <file preprocess="xml-stripblanks" compressed="true" alias="gtk/synced-tabs-dialog.ui">resources/gtk/synced-tabs-dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/tab-overview-menu.ui">resources/gtk/tab-overview-menu.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/webapp-additional-urls-dialog.ui">resources/gtk/webapp-additional-urls-dialog.ui</file>
     <file>mask.glsl</file>

@@ -115,7 +115,6 @@ ephy_page_menu_button_init (EphyPageMenuButton *self)
     remove_menu_item (self->page_menu, "win.encoding");
     remove_menu_item (self->page_menu, "app.shortcuts");
     remove_menu_item (self->page_menu, "app.help");
-    remove_menu_item (self->page_menu, "app.firefox-sync-dialog");
     remove_menu_item (self->page_menu, "import-export");
     remove_menu_item (self->page_menu, "webapps");
   } else {
