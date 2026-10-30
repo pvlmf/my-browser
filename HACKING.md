@@ -7,12 +7,12 @@ successfully. If you're not sure how to handle this, refer to the
 [development wiki page](https://welcome.gnome.org/app/Epiphany) for
 suggestions.
 
-# Code Style
+# コードの書式
 
-In order to keep the code nice and clean we have a few requirements you'll
+コードをより簡潔に保つために、 we have a few requirements you'll
 need to stick to in order to get your patch accepted:
 
- * Use 2-space no-tabs for indentation.
+ * インデントにはスペース2つで、タブを使わない。
 
  * Use K&R style for the braces.
 
@@ -21,7 +21,7 @@ need to stick to in order to get your patch accepted:
 
  * Callback functions have a suffix _cb.
 
- * All files have to be encoded in UTF-8.
+ * すべてのファイルはUTF-8でエンコードする。
 
  * Use `char`/`int`/`double`/…, not `gchar`/`gint`/`gdouble`/… types.
 
@@ -32,14 +32,14 @@ need to stick to in order to get your patch accepted:
    should follow the same pattern excluding the config.h and
    self file section, for obvious reasons.
 
- * Make comments full sentences. This means proper capitalization and
+ * コメントは完全な分で書く。 This means proper capitalization and
    punctuation.
 
  * `data/kr-gnome-indent.cfg` is provided as a reference config file for the
    uncrustify program to get correct indentation in new files.
 
- * There's no space between a type cast and the variable name:  Right:
-   `(int *)foo`. Wrong: `(int*) foo`.
+ * 型と変数名の間にスペースを空けない:
+   正:`(int *)foo` 誤: `(int*) foo`
 
  * Avoid explicit comparisons against TRUE, FALSE, and NULL. Right:
    `if (!condition)`, `if (!pointer)`, `if (integer == 0)`. Wrong:
@@ -48,9 +48,9 @@ need to stick to in order to get your patch accepted:
  * Use `g_signal_emit ()` if a signal is part of the class. Otherwise, use
    `g_signal_emit_by_name ()`.
 
-# Code Structure
+# コードの構造
 
-## Layering
+## 階層
 
 The code is currently structured into layers, where higher-level layers have
 full access to lower-level layers, but lower-level layers have no access to the
@@ -58,7 +58,7 @@ higher layers except via delegate objects. (See `EphyEmbedContainer` for an
 example of a delegate interface that allows `embed/` limited access to
 `EphyWindow`, even though `EphyWindow` is in `src/`.) The levels are:
 
- * `src/`, the highest layer, mostly GUI stuff
+ * `src/`, 最上位の階層, mostly GUI stuff
  * `embed/`, stuff relating to the web view
  * `lib/` lowest layer, helper classes that don't need higher-level stuff
 
@@ -90,7 +90,7 @@ is accessible anywhere from `embed/` or `src/`. So if you have global stuff
 that you need to access from `embed/`, you need to put it in `EphyEmbedShell`,
 not `EphyShell`.
 
-## Important Epiphany Objects
+## 重要なEpiphanyのオブジェクト
 
 `EphyWindow` is a subclass of `GtkApplicationWindow`, which is a subclass of
 `GtkWindow`. It's the window. You can have any number of windows open at a time.
@@ -101,7 +101,7 @@ or more tabs, and each tab is an `EphyEmbed`. That's worth repeating: an
 `EphyWebView` (subclass of `WebKitWebView`). This is the object that actually
 displays the web page, where all the web browser magic happens.
 
-## Important WebKitGTK Objects
+## 重要なWebKitGTKオブジェクト
 
 WebKitGTK is a WebKit port that provides a GTK API wrapper around WebKit.
 
@@ -174,7 +174,7 @@ the UI process API, the web process API has `WebKitWebProcessExtension` and
 Meanwhile, each `WebKitWebView` will have one or more `WebKitWebPage`s. Only one page will be
 active in a view at a given time: the other pages are for process swaps.
 
-# Security
+# セキュリティ
 
 When injecting untrusted data into web content, you need to properly encode the
 data for the relevant context in order to prevent XSS vulnerabilities. For
@@ -187,7 +187,7 @@ with this.
 When working with JavaScript, pay particular attention to Rule #8 "Prevent DOM-
 based XSS" as it is tricky and requires care throughout your JavaScript.
 
-# Debugging
+# デバッグ
 
 To enable debugging use the configure option `-Ddeveloper_mode=true`.
 
@@ -201,7 +201,7 @@ module `all` enables all log modules.
 
 Use the `LOG()` macro to put debug messages in the code.
 
-## Warnings
+## 警告
 
 At execution time, you must enable the service. To enable you to debug
 warnings, set the environment variable `EPHY_DEBUG_BREAK`.
