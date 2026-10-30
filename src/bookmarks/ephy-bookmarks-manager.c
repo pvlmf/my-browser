@@ -66,36 +66,6 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 static void
-ephy_bookmarks_manager_copy_tags_from_bookmark (EphyBookmarksManager *self,
-                                                EphyBookmark         *dest,
-                                                EphyBookmark         *source)
-{
-  GSequenceIter *iter;
-
-  g_assert (EPHY_IS_BOOKMARKS_MANAGER (self));
-  g_assert (EPHY_IS_BOOKMARK (dest));
-  g_assert (EPHY_IS_BOOKMARK (source));
-
-  for (iter = g_sequence_get_begin_iter (ephy_bookmark_get_tags (source));
-       !g_sequence_iter_is_end (iter); iter = g_sequence_iter_next (iter))
-    ephy_bookmark_add_tag (dest, g_sequence_get (iter));
-}
-
-static void
-ephy_bookmarks_manager_create_tags_from_bookmark (EphyBookmarksManager *self,
-                                                  EphyBookmark         *bookmark)
-{
-  GSequenceIter *iter;
-
-  g_assert (EPHY_IS_BOOKMARKS_MANAGER (self));
-  g_assert (EPHY_IS_BOOKMARK (bookmark));
-
-  for (iter = g_sequence_get_begin_iter (ephy_bookmark_get_tags (bookmark));
-       !g_sequence_iter_is_end (iter); iter = g_sequence_iter_next (iter))
-    ephy_bookmarks_manager_create_tag (self, g_sequence_get (iter));
-}
-
-static void
 ephy_bookmarks_manager_dispose (GObject *object)
 {
   EphyBookmarksManager *self = EPHY_BOOKMARKS_MANAGER (object);

@@ -69,12 +69,6 @@ struct _EphyPasswordManager {
   GHashTable *cache;
 };
 
-enum {
-  LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL];
-
 static void ephy_password_manager_forget_record (EphyPasswordManager *self,
                                                  EphyPasswordRecord  *record,
                                                  EphyPasswordRecord  *replacement,
@@ -563,7 +557,6 @@ retrieve_secret_cb (GObject        *source_object,
   gint64 created;
   gint64 modified;
   const char *password;
-  gint64 server_time_modified;
   EphyPasswordRecord *record;
   SecretValue *value = NULL;
   GError *error = NULL;
@@ -602,7 +595,6 @@ retrieve_secret_cb (GObject        *source_object,
                                      username_field, password_field,
                                      created * 1000,
                                      modified * 1000);
-  server_time_modified = g_ascii_strtod (timestamp, NULL);
   data->records = g_list_prepend (data->records, record);
 
 out:
@@ -822,8 +814,6 @@ forget_cb (GList    **records,
   /* Since we included ID in our query, this list should always be of length 1.
    * But older versions of EphyPasswordManager would accidentally create
    * duplicate records with the same ID, so we have to handle this.
-   *
-   * Note: a second copy of this comment exists in replace_existing_cb().
    */
   if (g_list_length (*records) > 1) {
     g_warning ("Deleting unexpected duplicate password records (this likely indicates a bug in EphyPasswordManager)");
@@ -888,39 +878,4 @@ ephy_password_manager_forget_all (EphyPasswordManager *self)
 
   ephy_password_manager_query (self, NULL, NULL, NULL, NULL, NULL, NULL, FALSE,
                                forget_all_cb, self);
-}
-
-static void
-replace_existing_cb (GList    **records,
-                     gpointer   user_data)
-{
-  ManageRecordAsyncData *data = (ManageRecordAsyncData *)user_data;
-
-  /* Since we included ID in our query, this list should always be of length 1.
-   * But older versions of EphyPasswordManager would accidentally create
-   * duplicate records with the same ID, so we have to handle this.
-   *
-   * Note: a second copy of this comment exists in replace_existing_cb().
-   */
-  if (g_list_length (*records) > 1) {
-    g_warning ("Deleting unexpected duplicate password records (this likely indicates a bug in EphyPasswordManager)");
-    *records = deduplicate_records (data->manager, *records);
-  }
-
-  ephy_password_manager_forget_record (data->manager, (*records)->data, data->record, NULL);
-  manage_record_async_data_free (data);
-}
-
-static void
-ephy_password_manager_replace_existing (EphyPasswordManager *self,
-                                        EphyPasswordRecord  *record)
-{
-  g_assert (EPHY_IS_PASSWORD_MANAGER (self));
-  g_assert (EPHY_IS_PASSWORD_RECORD (record));
-
-  ephy_password_manager_query (self, ephy_password_record_get_id (record),
-                               NULL, NULL, NULL, NULL, NULL,
-                               FALSE,
-                               replace_existing_cb,
-                               manage_record_async_data_new (self, record, NULL));
 }
