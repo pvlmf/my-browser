@@ -77,6 +77,7 @@
 #include "ephy-zoom.h"
 #include "prefs-general-page.h"
 #include "prefs-search-engine-page.h"
+#include "ephy-json-utils.h"
 
 #define DEFAULT_ICON_SIZE 192
 #define FAVICON_SIZE 16

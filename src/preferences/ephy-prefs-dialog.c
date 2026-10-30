@@ -41,7 +41,6 @@ struct _EphyPrefsDialog {
   AdwPreferencesDialog parent_instance;
 
   PrefsGeneralPage *general_page;
-  GtkWidget *extensions_page;
 
   EphyWindow *parent_window;
 
@@ -174,11 +173,6 @@ ephy_prefs_dialog_init (EphyPrefsDialog *dialog)
   gtk_widget_init_template (GTK_WIDGET (dialog));
 
   gtk_widget_set_size_request (GTK_WIDGET (dialog), 360, 200);
-  g_signal_connect_object (EPHY_SETTINGS_WEB,
-                           "changed::" EPHY_PREFS_WEB_ENABLE_WEBEXTENSIONS,
-                           G_CALLBACK (sync_extensions),
-                           dialog,
-                           G_CONNECT_SWAPPED);
 
   search_engine_list_box = prefs_general_page_get_search_engine_list_box (dialog->general_page);
   g_signal_connect_object (search_engine_list_box,

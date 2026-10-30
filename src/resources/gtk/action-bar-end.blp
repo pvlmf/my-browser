@@ -21,6 +21,16 @@ template $EphyActionBarEnd: Box {
     }
   }
 
+  Button overview_button {
+    icon-name: "view-grid-symbolic";
+    action-name: "win.tabs-view";
+    tooltip-text: _("View Open Tabs");
+
+    styles [
+      "toolbar-button",
+    ]
+  }
+
   Button bookmarks_button {
     tooltip-text: _("Bookmarks");
     clicked => $on_bookmarks_button();

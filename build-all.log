@@ -1,0 +1,26 @@
+ninja: Entering directory `build'
+[1/169] Generating config.h with a custom command
+[2/25] Generating src/epiphany-resources_h with a custom command
+[3/25] Generating src/epiphany-resources_c with a custom command
+[4/25] Compiling C object src/epiphany.p/meson-generated_.._epiphany-resources.c.o
+[5/25] Compiling C object tests/test-ephy-web-view.p/meson-generated_.._.._src_epiphany-resources.c.o
+[6/25] Compiling C object tests/test-location-entry.p/meson-generated_.._.._src_epiphany-resources.c.o
+[7/25] Compiling C object src/libephymain.so.p/window-commands.c.o
+[8/25] Linking target src/libephymain.so
+[9/25] Generating symbol file src/libephymain.so.p/libephymain.so.symbols
+[10/25] Linking target src/ephy-profile-migrator
+[11/25] Linking target tests/test-ephy-encodings
+[12/25] Linking target tests/test-ephy-embed-shell
+[13/25] Linking target src/epiphany-webapp-provider
+[14/25] Linking target tests/test-ephy-output-encoding
+[15/25] Linking target tests/test-ephy-web-view
+[16/25] Linking target tests/test-ephy-string
+[17/25] Linking target tests/test-ephy-uri-helpers
+[18/25] Linking target src/epiphany-search-provider
+[19/25] Linking target tests/test-ephy-migration
+[20/25] Linking target tests/test-ephy-history
+[21/25] Linking target tests/test-ephy-file-helpers
+[22/25] Linking target tests/test-ephy-sqlite
+[23/25] Linking target tests/test-ephy-embed-utils
+[24/25] Linking target src/epiphany
+[25/25] Linking target tests/test-location-entry
