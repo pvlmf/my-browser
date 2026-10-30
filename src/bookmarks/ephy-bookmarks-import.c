@@ -23,10 +23,10 @@
 #include "ephy-bookmarks-import.h"
 
 #include <glib/gi18n.h>
+#include <json-glib/json-glib.h>
 
 #include "ephy-shell.h"
 #include "ephy-sqlite-connection.h"
-#include "ephy-synchronizable.h"
 #include "ephy-sync-utils.h"
 #include "gvdb-builder.h"
 #include "gvdb-reader.h"
@@ -61,7 +61,7 @@ get_bookmarks_from_table (GvdbTable *table)
     const char *title;
     gint64 time_added;
     char *id;
-    gint64 server_time_modified;
+    gint64 modified_time;
     gboolean is_uploaded;
 
     /* Obtain the corresponding GVariant. */
@@ -69,7 +69,7 @@ get_bookmarks_from_table (GvdbTable *table)
 
     g_variant_get (value, "(x&s&sxbas)",
                    &time_added, &title, &id,
-                   &server_time_modified, &is_uploaded, &iter);
+                   &modified_time, &is_uploaded, &iter);
 
     /* Add all stored tags in a GSequence. */
     tags = g_sequence_new (g_free);
@@ -83,7 +83,7 @@ get_bookmarks_from_table (GvdbTable *table)
     /* Create the new bookmark. */
     bookmark = ephy_bookmark_new (list[i], title, tags, id);
     ephy_bookmark_set_time_added (bookmark, time_added);
-    ephy_synchronizable_set_server_time_modified (EPHY_SYNCHRONIZABLE (bookmark), server_time_modified);
+    ephy_bookmark_set_modified_time (bookmark, modified_time);
     ephy_bookmark_set_is_uploaded (bookmark, is_uploaded);
     g_sequence_prepend (bookmarks, bookmark);
 
@@ -635,7 +635,7 @@ ephy_bookmarks_import_from_html (EphyBookmarksManager  *manager,
     if (!bookmark) {
       bookmark = ephy_bookmark_new (url, title, tags, guid);
       ephy_bookmark_set_time_added (bookmark, time_added);
-      ephy_synchronizable_set_server_time_modified (EPHY_SYNCHRONIZABLE (bookmark), time_added);
+      ephy_bookmark_set_modified_time (bookmark, time_added);
 
       g_sequence_prepend (bookmarks, bookmark);
     }
@@ -684,7 +684,7 @@ chrome_add_child (JsonArray *array,
 
       bookmark = ephy_bookmark_new (url, title, tags, guid);
       ephy_bookmark_set_time_added (bookmark, time_added);
-      ephy_synchronizable_set_server_time_modified (EPHY_SYNCHRONIZABLE (bookmark), time_added);
+      ephy_bookmark_set_modified_time (bookmark, time_added);
 
       g_sequence_prepend (bookmarks, bookmark);
     }

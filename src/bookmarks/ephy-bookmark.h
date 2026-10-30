@@ -21,7 +21,6 @@
 #pragma once
 
 #include <glib-object.h>
-#include <json-glib/json-glib.h>
 
 G_BEGIN_DECLS
 
@@ -36,6 +35,9 @@ EphyBookmark        *ephy_bookmark_new                    (const char *url,
 void                 ephy_bookmark_set_time_added         (EphyBookmark *self,
                                                            gint64        time_added);
 gint64               ephy_bookmark_get_time_added         (EphyBookmark *self);
+void                 ephy_bookmark_set_modified_time      (EphyBookmark *self,
+                                                           gint64        modified_time);
+gint64               ephy_bookmark_get_modified_time      (EphyBookmark *self);
 void                 ephy_bookmark_set_url                (EphyBookmark *self,
                                                            const char   *url);
 const char          *ephy_bookmark_get_url                (EphyBookmark *self);

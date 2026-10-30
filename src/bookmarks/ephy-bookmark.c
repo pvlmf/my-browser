@@ -27,7 +27,6 @@
 #include "ephy-bookmarks-manager.h"
 #include "ephy-shell.h"
 #include "ephy-sync-utils.h"
-#include "ephy-synchronizable.h"
 
 struct _EphyBookmark {
   GObject parent_instance;
@@ -40,18 +39,11 @@ struct _EphyBookmark {
   /* Stable local bookmark identifier. */
   char *id;
 
-  /* Retained in the local GVDB format for compatibility. */
-  gint64 server_time_modified;
+  /* Legacy field retained in the local GVDB format for compatibility. */
+  gint64 modified_time;
 };
 
-static void json_serializable_iface_init (JsonSerializableIface *iface);
-static void ephy_synchronizable_iface_init (EphySynchronizableInterface *iface);
-
-G_DEFINE_FINAL_TYPE_WITH_CODE (EphyBookmark, ephy_bookmark, G_TYPE_OBJECT,
-                               G_IMPLEMENT_INTERFACE (JSON_TYPE_SERIALIZABLE,
-                                                      json_serializable_iface_init)
-                               G_IMPLEMENT_INTERFACE (EPHY_TYPE_SYNCHRONIZABLE,
-                                                      ephy_synchronizable_iface_init))
+G_DEFINE_FINAL_TYPE (EphyBookmark, ephy_bookmark, G_TYPE_OBJECT)
 
 typedef enum {
   PROP_TIME_ADDED = 1,      /* Epiphany */
@@ -241,6 +233,22 @@ ephy_bookmark_get_time_added (EphyBookmark *self)
   return self->time_added;
 }
 
+void
+ephy_bookmark_set_modified_time (EphyBookmark *self,
+                                gint64        modified_time)
+{
+  g_assert (EPHY_IS_BOOKMARK (self));
+
+  self->modified_time = modified_time;
+}
+
+gint64
+ephy_bookmark_get_modified_time (EphyBookmark *self)
+{
+  g_assert (EPHY_IS_BOOKMARK (self));
+
+  return self->modified_time;
+}
 
 void
 ephy_bookmark_set_url (EphyBookmark *self,
@@ -467,108 +475,4 @@ ephy_bookmark_generate_random_id (void)
   }
 
   return id;
-}
-
-static JsonNode *
-serializable_serialize_property (JsonSerializable *serializable,
-                                 const char       *name,
-                                 const GValue     *value,
-                                 GParamSpec       *pspec)
-{
-  if (G_VALUE_HOLDS_STRING (value) && !g_value_get_string (value)) {
-    JsonNode *node = json_node_new (JSON_NODE_VALUE);
-    json_node_set_string (node, "");
-    return node;
-  }
-
-  if (g_strcmp0 (name, "tags") == 0) {
-    JsonNode *node = json_node_new (JSON_NODE_ARRAY);
-    JsonArray *array = json_array_new ();
-    GSequence *tags = g_value_get_pointer (value);
-    GSequenceIter *iter;
-
-    if (tags) {
-      for (iter = g_sequence_get_begin_iter (tags);
-           !g_sequence_iter_is_end (iter);
-           iter = g_sequence_iter_next (iter)) {
-        json_array_add_string_element (array, g_sequence_get (iter));
-      }
-    }
-
-    json_node_set_array (node, array);
-
-    return node;
-  }
-
-  /* This is not a Firefox bookmark property, skip it. */
-  if (g_strcmp0 (name, "time-added") == 0)
-    return NULL;
-
-  return json_serializable_default_serialize_property (serializable, name, value, pspec);
-}
-
-static gboolean
-serializable_deserialize_property (JsonSerializable *serializable,
-                                   const char       *name,
-                                   GValue           *value,
-                                   GParamSpec       *pspec,
-                                   JsonNode         *node)
-{
-  if (G_VALUE_HOLDS_STRING (value) && JSON_NODE_HOLDS_NULL (node)) {
-    g_value_set_static_string (value, "");
-    return TRUE;
-  }
-
-  if (g_strcmp0 (name, "tags") == 0) {
-    GSequence *tags = g_sequence_new (g_free);
-    JsonArray *array = json_node_get_array (node);
-    const char *tag;
-
-    for (gsize i = 0; i < json_array_get_length (array); i++) {
-      tag = json_node_get_string (json_array_get_element (array, i));
-      g_sequence_insert_sorted (tags, g_strdup (tag),
-                                (GCompareDataFunc)ephy_bookmark_tags_compare, NULL);
-    }
-
-    g_value_set_pointer (value, tags);
-
-    return TRUE;
-  }
-
-  return json_serializable_default_deserialize_property (serializable, name, value, pspec, node);
-}
-
-static void
-json_serializable_iface_init (JsonSerializableIface *iface)
-{
-  iface->serialize_property = serializable_serialize_property;
-  iface->deserialize_property = serializable_deserialize_property;
-}
-
-static const char *
-synchronizable_get_id (EphySynchronizable *synchronizable)
-{
-  return ephy_bookmark_get_id (EPHY_BOOKMARK (synchronizable));
-}
-
-static gint64
-synchronizable_get_server_time_modified (EphySynchronizable *synchronizable)
-{
-  return EPHY_BOOKMARK (synchronizable)->server_time_modified;
-}
-
-static void
-synchronizable_set_server_time_modified (EphySynchronizable *synchronizable,
-                                         gint64              server_time_modified)
-{
-  EPHY_BOOKMARK (synchronizable)->server_time_modified = server_time_modified;
-}
-
-static void
-ephy_synchronizable_iface_init (EphySynchronizableInterface *iface)
-{
-  iface->get_id = synchronizable_get_id;
-  iface->get_server_time_modified = synchronizable_get_server_time_modified;
-  iface->set_server_time_modified = synchronizable_set_server_time_modified;
-  iface->to_bso = ephy_synchronizable_default_to_bso;
 }
