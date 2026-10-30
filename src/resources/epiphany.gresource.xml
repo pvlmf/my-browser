@@ -9,12 +9,10 @@
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/bookmark-properties.ui">resources/gtk/bookmark-properties.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/bookmark-row.ui">resources/gtk/bookmark-row.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/bookmarks-dialog.ui">resources/gtk/bookmarks-dialog.ui</file>
-    <file preprocess="xml-stripblanks" compressed="true" alias="gtk/browser-action-row.ui">resources/gtk/browser-action-row.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/clear-data-view.ui">resources/gtk/clear-data-view.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/data-view.ui">resources/gtk/data-view.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/encoding-dialog.ui">resources/gtk/encoding-dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/encoding-row.ui">resources/gtk/encoding-row.ui</file>
-    <file preprocess="xml-stripblanks" compressed="true" alias="gtk/extension-view.ui">resources/gtk/extension-view.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/firefox-sync-dialog.ui">resources/gtk/firefox-sync-dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/history-dialog.ui">resources/gtk/history-dialog.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/lang-row.ui">resources/gtk/lang-row.ui</file>
@@ -24,7 +22,6 @@
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/passwords-view.ui">resources/gtk/passwords-view.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/prefs-appearance-page.ui">resources/gtk/prefs-appearance-page.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/prefs-dialog.ui">resources/gtk/prefs-dialog.ui</file>
-    <file preprocess="xml-stripblanks" compressed="true" alias="gtk/prefs-extensions-page.ui">resources/gtk/prefs-extensions-page.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/prefs-features-page.ui">resources/gtk/prefs-features-page.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/prefs-general-page.ui">resources/gtk/prefs-general-page.ui</file>
     <file preprocess="xml-stripblanks" compressed="true" alias="gtk/prefs-lang-dialog.ui">resources/gtk/prefs-lang-dialog.ui</file>

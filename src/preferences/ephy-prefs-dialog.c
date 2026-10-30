@@ -32,9 +32,6 @@
 #include "ephy-prefs.h"
 #include "ephy-search-engine-manager.h"
 #include "ephy-settings.h"
-#include "ephy-web-extension.h"
-#include "extension-view.h"
-#include "prefs-extensions-page.h"
 #include "prefs-features-page.h"
 #include "prefs-general-page.h"
 #include "prefs-search-engine-page.h"
@@ -130,34 +127,9 @@ on_clear_data_row_activated (GtkWidget       *privacy_page,
   ephy_prefs_dialog_show_clear_data_view (prefs_dialog);
 }
 
-static void
-on_extension_row_activated (GtkWidget        *extensions_page,
-                            EphyWebExtension *extension,
-                            EphyPrefsDialog  *prefs_dialog)
-{
-  AdwNavigationPage *page = ADW_NAVIGATION_PAGE (ephy_extension_view_new (extension));
 
-  adw_preferences_dialog_push_subpage (ADW_PREFERENCES_DIALOG (prefs_dialog), page);
-}
 
-static void
-sync_extensions (EphyPrefsDialog *self)
-{
-  gboolean enable_extensions;
 
-  enable_extensions = g_settings_get_boolean (EPHY_SETTINGS_WEB, EPHY_PREFS_WEB_ENABLE_WEBEXTENSIONS);
-
-  if (enable_extensions && !self->extensions_page) {
-    self->extensions_page = g_object_new (EPHY_TYPE_PREFS_EXTENSIONS_PAGE, NULL);
-    g_signal_connect (self->extensions_page, "extension-row-activated", G_CALLBACK (on_extension_row_activated), self);
-    adw_preferences_dialog_add (ADW_PREFERENCES_DIALOG (self),
-                                ADW_PREFERENCES_PAGE (self->extensions_page));
-  } else if (self->extensions_page) {
-    adw_preferences_dialog_remove (ADW_PREFERENCES_DIALOG (self),
-                                   ADW_PREFERENCES_PAGE (self->extensions_page));
-    g_clear_weak_pointer (&self->extensions_page);
-  }
-}
 
 #if !TECH_PREVIEW && !CANARY
 static void
@@ -202,7 +174,6 @@ ephy_prefs_dialog_init (EphyPrefsDialog *dialog)
   gtk_widget_init_template (GTK_WIDGET (dialog));
 
   gtk_widget_set_size_request (GTK_WIDGET (dialog), 360, 200);
-  sync_extensions (dialog);
   g_signal_connect_object (EPHY_SETTINGS_WEB,
                            "changed::" EPHY_PREFS_WEB_ENABLE_WEBEXTENSIONS,
                            G_CALLBACK (sync_extensions),

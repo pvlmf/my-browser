@@ -41,14 +41,6 @@ struct _EphyActionBarEnd {
   GtkWidget *downloads_popover;
   GtkWidget *downloads_icon;
   GtkWidget *overview_button;
-  GtkWidget *browser_actions_button;
-  GtkWidget *browser_actions_popover;
-  GtkWidget *browser_actions_scrolled_window;
-  GtkWidget *browser_actions_listbox;
-  GtkWidget *browser_actions_stack;
-  GtkWidget *browser_actions_popup_view_box;
-  GtkWidget *browser_actions_popup_view_label;
-  GtkWidget *browser_action_popup_web_view;
 
   GdkPaintable *downloads_paintable;
 
@@ -56,9 +48,6 @@ struct _EphyActionBarEnd {
 };
 
 G_DEFINE_FINAL_TYPE (EphyActionBarEnd, ephy_action_bar_end, GTK_TYPE_BOX)
-
-static void set_browser_actions (EphyActionBarEnd *action_bar_end,
-                                 GListStore       *browser_actions);
 
 static void
 add_attention_timeout_cb (EphyActionBarEnd *self)
@@ -128,67 +117,6 @@ show_downloads_cb (EphyDownloadsManager *manager,
 }
 
 static void
-remove_popup_webview (EphyActionBarEnd *action_bar_end)
-{
-  if (action_bar_end->browser_action_popup_web_view) {
-    gtk_box_remove (GTK_BOX (action_bar_end->browser_actions_popup_view_box),
-                    action_bar_end->browser_action_popup_web_view);
-    action_bar_end->browser_action_popup_web_view = NULL;
-  }
-}
-
-
-
-static void
-browser_actions_popup_view_back_clicked_cb (GtkButton        *button,
-                                            EphyActionBarEnd *action_bar_end)
-{
-  gtk_stack_set_visible_child (GTK_STACK (action_bar_end->browser_actions_stack),
-                               action_bar_end->browser_actions_scrolled_window);
-  remove_popup_webview (action_bar_end);
-}
-
-static void
-show_browser_action_cb (EphyActionBarEnd           *action_bar_end)
-{
-  GtkWindow *parent_window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (action_bar_end)));
-  GtkWindow *active_window = gtk_application_get_active_window (GTK_APPLICATION (g_application_get_default ()));
-
-  /* There may be multiple action bars that exist. We only want to show the popup in the visible bar the active window. */
-  if (parent_window != active_window)
-    return;
-  if (!gtk_widget_is_visible (action_bar_end->browser_actions_button))
-    return;
-
-  remove_popup_webview (action_bar_end);
-  gtk_menu_button_popdown (GTK_MENU_BUTTON (action_bar_end->browser_actions_button));
-}
-
-static void
-browser_actions_row_activated_cb (GtkListBox           *listbox,
-                                  EphyActionBarEnd     *action_bar_end)
-{
-  /* If it was handled we are done, otherwise we have to show a popup. */
-
-    gtk_menu_button_popdown (GTK_MENU_BUTTON (action_bar_end->browser_actions_button));
-    return;
-}
-
-static void
-browser_action_popover_visible_changed_cb (GtkWidget        *popover,
-                                           GParamSpec       *pspec,
-                                           EphyActionBarEnd *action_bar_end)
-{
-  if (!gtk_widget_get_visible (popover)) {
-    GtkStack *stack = GTK_STACK (action_bar_end->browser_actions_stack);
-
-    /* Reset to default state and destroy any open webview. */
-    gtk_stack_set_visible_child (stack, action_bar_end->browser_actions_scrolled_window);
-    remove_popup_webview (action_bar_end);
-  }
-}
-
-static void
 on_bookmarks_button (GtkButton *button,
                      gpointer   user_data)
 {
@@ -232,32 +160,6 @@ ephy_action_bar_end_class_init (EphyActionBarEndClass *klass)
   gtk_widget_class_bind_template_child (widget_class,
                                         EphyActionBarEnd,
                                         overview_button);
-  gtk_widget_class_bind_template_child (widget_class,
-                                        EphyActionBarEnd,
-                                        browser_actions_button);
-  gtk_widget_class_bind_template_child (widget_class,
-                                        EphyActionBarEnd,
-                                        browser_actions_popover);
-  gtk_widget_class_bind_template_child (widget_class,
-                                        EphyActionBarEnd,
-                                        browser_actions_scrolled_window);
-  gtk_widget_class_bind_template_child (widget_class,
-                                        EphyActionBarEnd,
-                                        browser_actions_listbox);
-  gtk_widget_class_bind_template_child (widget_class,
-                                        EphyActionBarEnd,
-                                        browser_actions_stack);
-  gtk_widget_class_bind_template_child (widget_class,
-                                        EphyActionBarEnd,
-                                        browser_actions_popup_view_box);
-  gtk_widget_class_bind_template_child (widget_class,
-                                        EphyActionBarEnd,
-                                        browser_actions_popup_view_label);
-
-  gtk_widget_class_bind_template_callback (widget_class,
-                                           browser_actions_popup_view_back_clicked_cb);
-  gtk_widget_class_bind_template_callback (widget_class,
-                                           browser_actions_row_activated_cb);
   gtk_widget_class_bind_template_callback (widget_class,
                                            on_bookmarks_button);
 }
@@ -312,13 +214,6 @@ ephy_action_bar_end_init (EphyActionBarEnd *action_bar_end)
   g_signal_connect_object (downloads_manager, "show-downloads",
                            G_CALLBACK (show_downloads_cb),
                            object, G_CONNECT_DEFAULT);
-
-  g_signal_connect_object (G_CALLBACK (show_browser_action_cb),
-                           object, G_CONNECT_DEFAULT);
-
-  g_signal_connect (action_bar_end->browser_actions_popover, "notify::visible",
-                    G_CALLBACK (browser_action_popover_visible_changed_cb),
-                    action_bar_end);
 }
 
 EphyActionBarEnd *
@@ -346,41 +241,4 @@ GtkWidget *
 ephy_action_bar_end_get_downloads_revealer (EphyActionBarEnd *action_bar_end)
 {
   return action_bar_end->downloads_revealer;
-}
-
-GtkWidget *
-create_browser_action_item_widget (gpointer           user_data)
-{
-
-}
-
-static void
-browser_actions_items_changed_cb (GListModel       *list,
-                                  guint             position,
-                                  guint             removed,
-                                  guint             added,
-                                  EphyActionBarEnd *action_bar_end)
-{
-  gtk_widget_set_visible (action_bar_end->browser_actions_button, g_list_model_get_n_items (list) != 0);
-
-  /* This handles an edge-case where if an extension is disabled while its popover is open the webview should be destroyed.
-   * However in normal usage this shouldn't happen and with the GTK4 port the extension dialog is also modal.
-   * So we just always manually close it instead of trying to track which extension popup is open. */
-  if (removed)
-    gtk_menu_button_popdown (GTK_MENU_BUTTON (action_bar_end->browser_actions_button));
-}
-
-static void
-set_browser_actions (EphyActionBarEnd *action_bar_end,
-                     GListStore       *browser_actions)
-{
-  gtk_list_box_bind_model (GTK_LIST_BOX (action_bar_end->browser_actions_listbox),
-                           G_LIST_MODEL (browser_actions),
-                           (GtkListBoxCreateWidgetFunc)create_browser_action_item_widget,
-                           NULL, NULL);
-
-  g_signal_connect_object (browser_actions, "items-changed", G_CALLBACK (browser_actions_items_changed_cb),
-                           action_bar_end, G_CONNECT_DEFAULT);
-
-  browser_actions_items_changed_cb (G_LIST_MODEL (browser_actions), 0, 0, 0, action_bar_end);
 }

@@ -1621,6 +1621,9 @@ open_uris_data_free (OpenURIsData *data)
 static gboolean
 ephy_shell_open_uris_idle (OpenURIsData *data)
 {
+
+  const char *url;
+
   EphyEmbed *embed = NULL;
   EphyHeaderBar *header_bar;
   EphyTitleWidget *title_widget;
