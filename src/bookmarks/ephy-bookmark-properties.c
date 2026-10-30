@@ -40,8 +40,6 @@ struct _EphyBookmarkProperties {
 
   EphyBookmarksManager *manager;
   EphyBookmark *bookmark;
-  gboolean bookmark_is_modified;
-  gboolean bookmark_is_removed;
   gboolean bookmark_is_new;
 
   GtkWidget *header_bar;
@@ -209,7 +207,6 @@ ephy_bookmark_properties_actions_remove_bookmark (EphyBookmarkProperties *self)
 {
   AdwDialog *dialog = ADW_DIALOG (gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_DIALOG));
 
-  self->bookmark_is_removed = TRUE;
   ephy_bookmarks_manager_remove_bookmark (self->manager, self->bookmark);
 
   adw_dialog_close (dialog);
@@ -253,57 +250,6 @@ ephy_bookmark_properties_buffer_text_changed_cb (EphyBookmarkProperties *self,
     gtk_widget_action_set_enabled (GTK_WIDGET (self), "bookmark-properties.add-tag", FALSE);
   else
     gtk_widget_action_set_enabled (GTK_WIDGET (self), "bookmark-properties.add-tag", TRUE);
-}
-
-static void
-ephy_bookmark_properties_bookmark_title_changed_cb (EphyBookmarkProperties *self,
-                                                    EphyBookmark           *bookmark,
-                                                    EphyBookmarksManager   *manager)
-{
-  g_assert (EPHY_IS_BOOKMARK_PROPERTIES (self));
-  g_assert (EPHY_IS_BOOKMARK (bookmark));
-  g_assert (EPHY_IS_BOOKMARKS_MANAGER (manager));
-
-  self->bookmark_is_modified = TRUE;
-}
-
-static void
-ephy_bookmark_properties_bookmark_url_changed_cb (EphyBookmarkProperties *self,
-                                                  EphyBookmark           *bookmark,
-                                                  EphyBookmarksManager   *manager)
-{
-  g_assert (EPHY_IS_BOOKMARK_PROPERTIES (self));
-  g_assert (EPHY_IS_BOOKMARK (bookmark));
-  g_assert (EPHY_IS_BOOKMARKS_MANAGER (manager));
-
-  self->bookmark_is_modified = TRUE;
-}
-
-static void
-ephy_bookmark_properties_bookmark_tag_added_cb (EphyBookmarkProperties *self,
-                                                EphyBookmark           *bookmark,
-                                                const char             *tag,
-                                                EphyBookmarksManager   *manager)
-{
-  g_assert (EPHY_IS_BOOKMARK_PROPERTIES (self));
-  g_assert (EPHY_IS_BOOKMARK (bookmark));
-  g_assert (EPHY_IS_BOOKMARKS_MANAGER (manager));
-
-  self->bookmark_is_modified = TRUE;
-}
-
-static void
-ephy_bookmark_properties_bookmark_tag_removed_cb (EphyBookmarkProperties *self,
-                                                  EphyBookmark           *bookmark,
-                                                  const char             *tag,
-                                                  EphyBookmarksManager   *manager)
-{
-  g_assert (EPHY_IS_BOOKMARK_PROPERTIES (self));
-  g_assert (EPHY_IS_BOOKMARK (bookmark));
-  g_assert (EPHY_IS_BOOKMARKS_MANAGER (manager));
-  g_assert (tag);
-
-  self->bookmark_is_modified = TRUE;
 }
 
 static void
@@ -456,9 +402,6 @@ ephy_bookmark_properties_finalize (GObject *object)
 {
   EphyBookmarkProperties *self = EPHY_BOOKMARK_PROPERTIES (object);
 
-  if (self->bookmark_is_modified && !self->bookmark_is_removed)
-    g_signal_emit_by_name (self->manager, "synchronizable-modified", self->bookmark, FALSE);
-
   ephy_bookmarks_manager_save (self->manager, FALSE, FALSE,
                                ephy_bookmarks_manager_save_warn_on_error_cancellable (self->manager),
                                ephy_bookmarks_manager_save_warn_on_error_cb,
@@ -521,26 +464,6 @@ ephy_bookmark_properties_init (EphyBookmarkProperties *self)
   gtk_widget_init_template (GTK_WIDGET (self));
 
   self->manager = ephy_shell_get_bookmarks_manager (ephy_shell_get_default ());
-  g_signal_connect_object (self->manager,
-                           "bookmark-title-changed",
-                           G_CALLBACK (ephy_bookmark_properties_bookmark_title_changed_cb),
-                           self,
-                           G_CONNECT_SWAPPED);
-  g_signal_connect_object (self->manager,
-                           "bookmark-url-changed",
-                           G_CALLBACK (ephy_bookmark_properties_bookmark_url_changed_cb),
-                           self,
-                           G_CONNECT_SWAPPED);
-  g_signal_connect_object (self->manager,
-                           "bookmark-tag-added",
-                           G_CALLBACK (ephy_bookmark_properties_bookmark_tag_added_cb),
-                           self,
-                           G_CONNECT_SWAPPED);
-  g_signal_connect_object (self->manager,
-                           "bookmark-tag-removed",
-                           G_CALLBACK (ephy_bookmark_properties_bookmark_tag_removed_cb),
-                           self,
-                           G_CONNECT_SWAPPED);
 
   gtk_list_box_set_sort_func (GTK_LIST_BOX (self->tag_list), tag_sort_func, NULL, NULL);
 
