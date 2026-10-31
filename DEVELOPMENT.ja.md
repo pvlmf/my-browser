@@ -19,7 +19,7 @@ Meson のビルドディレクトリを作成し、`developer_mode=true` を有�
 | `./build.sh` | コンパイルのみ実行 |
 | `./run.sh` | ビルド済みの Epiphany を起動 |
 | `./dev.sh` | コンパイル後に Epiphany を起動 |
-| `./check.sh` | シェル構文、ShellCheck（導入済みの場合）、Git差分、Meson再設定、コンパイルを確認 |
+| `./check.sh` | シェル構文、ShellCheck（導入済みの場合）、C/Blueprint整形、Git差分、Meson再設定、コンパイルを確認 |
 | `./test.sh` | Meson のテストを実行 |
 
 従来の「ビルドしてから起動する」操作は `./dev.sh` に移しました。`./build.sh` はコンパイル結果だけを確認できるようにしています。

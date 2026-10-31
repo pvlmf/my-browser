@@ -4,7 +4,7 @@ set -eu
 
 SOURCE_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
-UNCRUSTIFY=$(command -v uncrustify)
+UNCRUSTIFY=$(command -v uncrustify || true)
 if [ -z "$UNCRUSTIFY" ];
 then
     echo "Uncrustify is not installed on your system."
@@ -18,7 +18,7 @@ then
     exit 1
 fi
 
-BLUEPRINT_COMPILER=$(command -v blueprint-compiler)
+BLUEPRINT_COMPILER=$(command -v blueprint-compiler || true)
 if [ -z "$BLUEPRINT_COMPILER" ];
 then
     echo "blueprint-compiler is not installed on your system."

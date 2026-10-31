@@ -13,7 +13,7 @@ if [[ ! -f "$BUILD_DIR/build.ninja" ]]; then
   exit 2
 fi
 
-# テスト専用のXDG設定ディレクトリを/tmpに作成
+# テスト専用のXDG設定ディレクトリを/tmpに作成する。
 TEST_XDG_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/epiphany-test-xdg.XXXXXX")"
 trap 'rm -rf -- "$TEST_XDG_ROOT"' EXIT
 

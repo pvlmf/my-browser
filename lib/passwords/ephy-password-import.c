@@ -22,14 +22,14 @@
 
 #include "ephy-password-import.h"
 
+#include "ephy-password-manager.h"
+#include "ephy-sqlite-connection.h"
+#include "ephy-uri-helpers.h"
+
 #include <glib/gi18n.h>
 #include <nettle/aes.h>
 #include <nettle/cbc.h>
 #include <nettle/pbkdf2.h>
-
-#include "ephy-password-manager.h"
-#include "ephy-sqlite-connection.h"
-#include "ephy-uri-helpers.h"
 
 #define PASSWORDS_IMPORT_ERROR passwords_import_error_quark ()
 #define SECRET_SCHEMA  libsecret_get_schema ()

@@ -1,7 +1,9 @@
-#include <glib.h>
+#include "config.h"
 
 #include "ephy-password-record.h"
-#include "glib-object.h"
+
+#include <glib-object.h>
+#include <glib.h>
 
 static void
 test_password_record_properties (void)
@@ -46,9 +48,9 @@ test_password_record_properties (void)
   klass = G_OBJECT_GET_CLASS (record);
 
   for (guint i = 0; i < G_N_ELEMENTS (properties); i++)
-      g_assert_nonnull (g_object_class_find_property (klass, properties[i]));
+    g_assert_nonnull (g_object_class_find_property (klass, properties[i]));
   for (guint i = 0; i < G_N_ELEMENTS (removed_properties); i++)
-      g_assert_null (g_object_class_find_property (klass, removed_properties[i]));
+    g_assert_null (g_object_class_find_property (klass, removed_properties[i]));
 
   g_object_get (record,
                 "origin", &origin,
@@ -66,10 +68,10 @@ test_password_record_properties (void)
 
   copy = ephy_password_record_copy (record);
 
-  g_assert_cmpstr (ephy_password_record_get_id(copy), ==, "test-id");
-  g_assert_cmpstr (ephy_password_record_get_password(copy), ==, "test-password");
-  g_assert_cmpstr (ephy_password_record_get_target_origin(copy), ==, "https://example.com/login");
-  g_assert_true (ephy_password_record_get_time_password_changed(copy) == 1234567890);
+  g_assert_cmpstr (ephy_password_record_get_id (copy), ==, "test-id");
+  g_assert_cmpstr (ephy_password_record_get_password (copy), ==, "test-password");
+  g_assert_cmpstr (ephy_password_record_get_target_origin (copy), ==, "https://example.com/login");
+  g_assert_true (ephy_password_record_get_time_password_changed (copy) == 1234567890);
 
   g_object_unref (copy);
   g_object_unref (record);

@@ -21,6 +21,10 @@ else
   printf '\n[SKIP] ShellCheck is not installed\n'
 fi
 
+printf '\n========== C\Blueprint formatting ==========\n'
+bash "$ROOT_DIR/data/check-code-style"
+printf '[ OK ] C\Blueprint formatting\n'
+
 printf '\n========== Git diff check ==========\n'
 git diff --check HEAD --
 printf '[ OK ] Git diff check\n'

@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include <glib.h>
-
 #include "ephy-password-manager.h"
+
+#include <glib.h>
 
 void ephy_password_export (EphyPasswordManager *manager, const char *filename, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 

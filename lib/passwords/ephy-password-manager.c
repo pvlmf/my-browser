@@ -22,12 +22,11 @@
 
 #include "ephy-password-manager.h"
 
-#include <inttypes.h>
-#include <stdio.h>
+#include "ephy-debug.h"
 
 #include <glib/gi18n.h>
-
-#include "ephy-debug.h"
+#include <inttypes.h>
+#include <stdio.h>
 
 void
 ephy_password_request_data_free (EphyPasswordRequestData *request_data)

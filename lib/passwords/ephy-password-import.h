@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include <glib.h>
-
 #include "ephy-password-manager.h"
+
+#include <glib.h>
 
 typedef enum {
   CHROME,

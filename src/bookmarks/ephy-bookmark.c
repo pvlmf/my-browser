@@ -22,11 +22,11 @@
 
 #include "ephy-bookmark.h"
 
-#include <string.h>
-
 #include "ephy-bookmarks-manager.h"
-#include "ephy-shell.h"
 #include "ephy-id-utils.h"
+#include "ephy-shell.h"
+
+#include <string.h>
 
 struct _EphyBookmark {
   GObject parent_instance;

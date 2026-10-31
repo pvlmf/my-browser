@@ -18,9 +18,11 @@
  *  along with Epiphany.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <glib/gi18n.h>
+#include <config.h>
 
-#include "ephy-password-manager.h"
+#include "ephy-password-export.h"
+
+#include <glib/gi18n.h>
 
 typedef char *(*GetColumnFieldFunction)(EphyPasswordRecord *);
 

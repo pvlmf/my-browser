@@ -76,7 +76,7 @@ get_bookmarks_from_table (GvdbTable *table)
       g_variant_get (value, "(x&s&sas)",
                      &time_added, &title, &id, &iter);
     } else {
-      g_warning ("Unsupported bookmark entry format fot %s: %s",
+      g_warning ("Unsupported bookmark entry format for %s: %s",
                  list[i], g_variant_get_type_string (value));
       g_variant_unref (value);
       continue;
