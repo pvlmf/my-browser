@@ -38,9 +38,6 @@ struct _EphyBookmark {
 
   /* Stable local bookmark identifier. */
   char *id;
-
-  /* Legacy field retained in the local GVDB format for compatibility. */
-  gint64 modified_time;
 };
 
 G_DEFINE_FINAL_TYPE (EphyBookmark, ephy_bookmark, G_TYPE_OBJECT)
@@ -234,23 +231,6 @@ ephy_bookmark_get_time_added (EphyBookmark *self)
 }
 
 void
-ephy_bookmark_set_modified_time (EphyBookmark *self,
-                                gint64        modified_time)
-{
-  g_assert (EPHY_IS_BOOKMARK (self));
-
-  self->modified_time = modified_time;
-}
-
-gint64
-ephy_bookmark_get_modified_time (EphyBookmark *self)
-{
-  g_assert (EPHY_IS_BOOKMARK (self));
-
-  return self->modified_time;
-}
-
-void
 ephy_bookmark_set_url (EphyBookmark *self,
                        const char   *url)
 {
@@ -301,25 +281,6 @@ ephy_bookmark_get_id (EphyBookmark *self)
   g_assert (EPHY_IS_BOOKMARK (self));
 
   return self->id;
-}
-
-void
-ephy_bookmark_set_is_uploaded (EphyBookmark *self,
-                               gboolean      uploaded)
-{
-  /* FIXME: This is no longer used for Firefox Sync, but bookmarks import/export
-   * expects it. We need to delete it and write a migrator for bookmarks. */
-  g_assert (EPHY_IS_BOOKMARK (self));
-}
-
-gboolean
-ephy_bookmark_is_uploaded (EphyBookmark *self)
-{
-  /* FIXME: This is no longer used for Firefox Sync, but bookmarks import/export
-   * expects it. We need to delete it and write a migrator for bookmarks. */
-  g_assert (EPHY_IS_BOOKMARK (self));
-
-  return FALSE;
 }
 
 void

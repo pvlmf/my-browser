@@ -35,9 +35,6 @@ EphyBookmark        *ephy_bookmark_new                    (const char *url,
 void                 ephy_bookmark_set_time_added         (EphyBookmark *self,
                                                            gint64        time_added);
 gint64               ephy_bookmark_get_time_added         (EphyBookmark *self);
-void                 ephy_bookmark_set_modified_time      (EphyBookmark *self,
-                                                           gint64        modified_time);
-gint64               ephy_bookmark_get_modified_time      (EphyBookmark *self);
 void                 ephy_bookmark_set_url                (EphyBookmark *self,
                                                            const char   *url);
 const char          *ephy_bookmark_get_url                (EphyBookmark *self);
@@ -47,9 +44,6 @@ const char          *ephy_bookmark_get_title              (EphyBookmark *self);
 void                 ephy_bookmark_set_id                 (EphyBookmark *self,
                                                            const char   *id);
 const char          *ephy_bookmark_get_id                 (EphyBookmark *self);
-void                 ephy_bookmark_set_is_uploaded        (EphyBookmark *self,
-                                                           gboolean      uploaded);
-gboolean             ephy_bookmark_is_uploaded            (EphyBookmark *self);
 void                 ephy_bookmark_add_tag                (EphyBookmark *self,
                                                            const char   *tag);
 void                 ephy_bookmark_remove_tag             (EphyBookmark *self,

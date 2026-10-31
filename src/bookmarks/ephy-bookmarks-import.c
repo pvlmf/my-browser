@@ -60,15 +60,27 @@ get_bookmarks_from_table (GvdbTable *table)
     const char *title;
     gint64 time_added;
     char *id;
-    gint64 modified_time;
-    gboolean is_uploaded;
 
     /* Obtain the corresponding GVariant. */
     value = gvdb_table_get_value (table, list[i]);
 
-    g_variant_get (value, "(x&s&sxbas)",
-                   &time_added, &title, &id,
-                   &modified_time, &is_uploaded, &iter);
+
+    if (g_variant_is_of_type (value, G_VARIANT_TYPE ("(xssxbas)"))) {
+      gint64 legacy_modified_time;
+      gboolean legacy_is_uploaded;
+
+      g_variant_get (value, "(x&s&sxbas)",
+                     &time_added, &title, &id,
+                     &legacy_modified_time, &legacy_is_uploaded, &iter);
+    } else if (g_variant_is_of_type (value, G_VARIANT_TYPE ("(xssas)"))) {
+      g_variant_get (value, "(x&s&sas)",
+                     &time_added, &title, &id, &iter);
+    } else {
+      g_warning ("Unsupported bookmark entry format fot %s: %s",
+                 list[i], g_variant_get_type_string (value));
+      g_variant_unref (value);
+      continue;
+    }
 
     /* Add all stored tags in a GSequence. */
     tags = g_sequence_new (g_free);
@@ -82,8 +94,6 @@ get_bookmarks_from_table (GvdbTable *table)
     /* Create the new bookmark. */
     bookmark = ephy_bookmark_new (list[i], title, tags, id);
     ephy_bookmark_set_time_added (bookmark, time_added);
-    ephy_bookmark_set_modified_time (bookmark, modified_time);
-    ephy_bookmark_set_is_uploaded (bookmark, is_uploaded);
     g_sequence_prepend (bookmarks, bookmark);
 
     g_variant_unref (value);
@@ -634,7 +644,6 @@ ephy_bookmarks_import_from_html (EphyBookmarksManager  *manager,
     if (!bookmark) {
       bookmark = ephy_bookmark_new (url, title, tags, guid);
       ephy_bookmark_set_time_added (bookmark, time_added);
-      ephy_bookmark_set_modified_time (bookmark, time_added);
 
       g_sequence_prepend (bookmarks, bookmark);
     }
@@ -683,7 +692,6 @@ chrome_add_child (JsonArray *array,
 
       bookmark = ephy_bookmark_new (url, title, tags, guid);
       ephy_bookmark_set_time_added (bookmark, time_added);
-      ephy_bookmark_set_modified_time (bookmark, time_added);
 
       g_sequence_prepend (bookmarks, bookmark);
     }
