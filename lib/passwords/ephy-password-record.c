@@ -37,13 +37,13 @@ struct _EphyPasswordRecord {
 G_DEFINE_FINAL_TYPE (EphyPasswordRecord, ephy_password_record, G_TYPE_OBJECT)
 
 typedef enum {
-  PROP_ID = 1,                    /* Firefox Sync */
-  PROP_ORIGIN,                /* Epiphany && Firefox Sync */
-  PROP_TARGET_ORIGIN,         /* Epiphany && Firefox Sync */
-  PROP_USERNAME,              /* Epiphany && Firefox Sync */
-  PROP_PASSWORD,              /* Epiphany && Firefox Sync */
-  PROP_USERNAME_FIELD,        /* Epiphany && Firefox Sync */
-  PROP_PASSWORD_FIELD,        /* Epiphany && Firefox Sync */
+  PROP_ID = 1,
+  PROP_ORIGIN,
+  PROP_TARGET_ORIGIN,
+  PROP_USERNAME,
+  PROP_PASSWORD,
+  PROP_USERNAME_FIELD,
+  PROP_PASSWORD_FIELD,
   PROP_TIME_PASSWORD_CHANGED,
 } EphyPasswordRecordProps;
 
@@ -153,9 +153,6 @@ ephy_password_record_class_init (EphyPasswordRecordClass *klass)
   object_class->get_property = ephy_password_record_get_property;
   object_class->finalize = ephy_password_record_finalize;
 
-  /* The property names must match Firefox password object structure, see
-   * https://mozilla-services.readthedocs.io/en/latest/sync/objectformats.html#passwords
-   */
   obj_properties[PROP_ID] =
     g_param_spec_string ("id",
                          NULL, NULL,
@@ -167,7 +164,7 @@ ephy_password_record_class_init (EphyPasswordRecordClass *klass)
    * https://dxr.mozilla.org/mozilla-central/rev/892c8916ba32b7733e06bfbfdd4083ffae3ca028/toolkit/components/passwordmgr/LoginManagerContent.jsm#1380
    */
   obj_properties[PROP_ORIGIN] =
-    g_param_spec_string ("hostname",
+    g_param_spec_string ("origin",
                          NULL, NULL,
                          "Default security origin",
                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
@@ -176,7 +173,7 @@ ephy_password_record_class_init (EphyPasswordRecordClass *klass)
    * https://dxr.mozilla.org/mozilla-central/rev/892c8916ba32b7733e06bfbfdd4083ffae3ca028/toolkit/components/passwordmgr/LoginManagerContent.jsm#928
    */
   obj_properties[PROP_TARGET_ORIGIN] =
-    g_param_spec_string ("formSubmitURL",
+    g_param_spec_string ("target-origin",
                          NULL, NULL,
                          "Default target origin",
                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
@@ -191,12 +188,12 @@ ephy_password_record_class_init (EphyPasswordRecordClass *klass)
                          "Default password",
                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
   obj_properties[PROP_USERNAME_FIELD] =
-    g_param_spec_string ("usernameField",
+    g_param_spec_string ("username-field",
                          NULL, NULL,
                          "Default username field",
                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
   obj_properties[PROP_PASSWORD_FIELD] =
-    g_param_spec_string ("passwordField",
+    g_param_spec_string ("password-field",
                          NULL, NULL,
                          "Default password field",
                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
@@ -228,12 +225,12 @@ ephy_password_record_new (const char *id,
 {
   return EPHY_PASSWORD_RECORD (g_object_new (EPHY_TYPE_PASSWORD_RECORD,
                                              "id", id,
-                                             "hostname", origin,
-                                             "formSubmitURL", target_origin,
+                                             "origin", origin,
+                                             "target-origin", target_origin,
                                              "username", username,
                                              "password", password,
-                                             "usernameField", username_field,
-                                             "passwordField", password_field,
+                                             "username-field", username_field,
+                                             "password-field", password_field,
                                              "time-password-changed", time_password_changed,
                                              NULL));
 }
