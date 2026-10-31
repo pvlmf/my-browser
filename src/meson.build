@@ -112,7 +112,7 @@ libephymain_deps = [
   config_h,
   ephyembed_dep,
   ephymisc_dep,
-  ephysync_dep,
+  ephypasswords_dep,
   gcr_dep,
   gdk_pixbuf_dep,
   granite_dep,

@@ -99,4 +99,4 @@ ephymisc_dep = declare_dependency(
 )
 
 subdir('autofill')
-subdir('sync')
+subdir('passwords')

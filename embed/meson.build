@@ -58,7 +58,7 @@ libephyembed_includes = include_directories(
   '../lib/autofill',
   '../lib/contrib',
   '../lib/history',
-  '../lib/sync',
+  '../lib/passwords',
 )
 
 libephyembed = static_library('ephyembed',
