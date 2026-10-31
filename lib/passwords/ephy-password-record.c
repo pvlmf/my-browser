@@ -201,7 +201,7 @@ ephy_password_record_class_init (EphyPasswordRecordClass *klass)
                          "Default password field",
                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
   obj_properties[PROP_TIME_PASSWORD_CHANGED] =
-    g_param_spec_uint64 ("timePasswordChanged",
+    g_param_spec_uint64 ("time-password-hanged",
                          NULL, NULL,
                          0,
                          G_MAXUINT64,
@@ -234,7 +234,7 @@ ephy_password_record_new (const char *id,
                                              "password", password,
                                              "usernameField", username_field,
                                              "passwordField", password_field,
-                                             "timePasswordChanged", time_password_changed,
+                                             "time-password-hanged", time_password_changed,
                                              NULL));
 }
 
