@@ -27,7 +27,6 @@
 
 #include "ephy-shell.h"
 #include "ephy-sqlite-connection.h"
-#include "ephy-sync-utils.h"
 #include "gvdb-builder.h"
 #include "gvdb-reader.h"
 

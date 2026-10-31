@@ -33,7 +33,7 @@
 #include "ephy-prefs.h"
 #include "ephy-settings.h"
 #include "ephy-sqlite-connection.h"
-#include "ephy-sync-utils.h"
+#include "ephy-id-utils.h"
 
 typedef gboolean (*EphyHistoryServiceMethod)      (EphyHistoryService *self,
                                                    gpointer            data,
@@ -582,7 +582,7 @@ ephy_history_service_execute_add_visit_helper (EphyHistoryService   *self,
     visit->url->visit_count = 1;
 
     if (!visit->url->sync_id)
-      visit->url->sync_id = ephy_sync_utils_get_random_sync_id ();
+      visit->url->sync_id = ephy_id_utils_get_random_id ();
 
     ephy_history_service_add_url_row (self, visit->url);
 
@@ -597,7 +597,7 @@ ephy_history_service_execute_add_visit_helper (EphyHistoryService   *self,
       visit->url->last_visit_time = visit->visit_time;
 
     if (!visit->url->sync_id)
-      visit->url->sync_id = ephy_sync_utils_get_random_sync_id ();
+      visit->url->sync_id = ephy_id_utils_get_random_id ();
 
     ephy_history_service_update_url_row (self, visit->url);
   }

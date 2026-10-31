@@ -41,7 +41,7 @@ libephymisc_sources = [
   'ephy-sqlite-statement.c',
   'ephy-string.c',
   'ephy-suggestion.c',
-  'ephy-sync-utils.c',
+  'ephy-id-utils.c',
   'ephy-time-helpers.c',
   'ephy-uri-helpers.c',
   'ephy-user-agent.c',
