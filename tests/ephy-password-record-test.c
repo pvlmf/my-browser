@@ -1,11 +1,10 @@
 #include <glib.h>
-#include <time.h>
 
 #include "ephy-password-record.h"
 #include "glib-object.h"
 
 static void
-test_password_record_properties ()
+test_password_record_properties (void)
 {
   static const char *const properties[] = {
     "id",
