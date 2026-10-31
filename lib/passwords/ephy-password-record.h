@@ -35,7 +35,6 @@ EphyPasswordRecord *ephy_password_record_new                        (const char 
                                                                      const char *password,
                                                                      const char *username_field,
                                                                      const char *password_field,
-                                                                     guint64     time_created,
                                                                      guint64     time_password_changed);
 EphyPasswordRecord *ephy_password_record_copy                       (EphyPasswordRecord *self);
 const char         *ephy_password_record_get_id                     (EphyPasswordRecord *self);

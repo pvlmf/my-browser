@@ -532,7 +532,7 @@ ephy_password_manager_save (EphyPasswordManager *self,
   record = ephy_password_record_new (id, origin, target_origin,
                                      username, password,
                                      username_field, password_field,
-                                     timestamp, timestamp);
+                                     timestamp);
   ephy_password_manager_store_record (self, record);
 
   g_free (uuid);
@@ -554,7 +554,6 @@ retrieve_secret_cb (GObject        *source_object,
   const char *username_field;
   const char *password_field;
   const char *timestamp;
-  gint64 created;
   gint64 modified;
   const char *password;
   EphyPasswordRecord *record;
@@ -577,7 +576,6 @@ retrieve_secret_cb (GObject        *source_object,
   username_field = g_hash_table_lookup (attributes, USERNAME_FIELD_KEY);
   password_field = g_hash_table_lookup (attributes, PASSWORD_FIELD_KEY);
   timestamp = g_hash_table_lookup (attributes, SERVER_TIME_MODIFIED_KEY);
-  created = secret_retrievable_get_created (retrievable);
   modified = secret_retrievable_get_modified (retrievable);
 
   LOG ("Found password record (%s, %s, %s, %s, %s, %s)",
@@ -593,7 +591,6 @@ retrieve_secret_cb (GObject        *source_object,
   record = ephy_password_record_new (id, origin, target_origin,
                                      username, password,
                                      username_field, password_field,
-                                     created * 1000,
                                      modified * 1000);
   data->records = g_list_prepend (data->records, record);
 
@@ -693,7 +690,7 @@ ephy_password_manager_query (EphyPasswordManager              *self,
     data->query_record = ephy_password_record_new (id, origin, target_origin,
                                                    username, NULL,
                                                    username_field, password_field,
-                                                   0, 0);
+                                                   0);
 
   secret_password_searchv (EPHY_FORM_PASSWORD_SCHEMA,
                            attributes,

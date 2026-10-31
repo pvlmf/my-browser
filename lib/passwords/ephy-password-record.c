@@ -31,7 +31,6 @@ struct _EphyPasswordRecord {
   char *password;
   char *username_field;
   char *password_field;
-  guint64 time_created;
   guint64 time_password_changed;
 };
 
@@ -45,8 +44,7 @@ typedef enum {
   PROP_PASSWORD,              /* Epiphany && Firefox Sync */
   PROP_USERNAME_FIELD,        /* Epiphany && Firefox Sync */
   PROP_PASSWORD_FIELD,        /* Epiphany && Firefox Sync */
-  PROP_TIME_CREATED,          /* Firefox Sync */
-  PROP_TIME_PASSWORD_CHANGED, /* Firefox Sync */
+  PROP_TIME_PASSWORD_CHANGED,
 } EphyPasswordRecordProps;
 
 static GParamSpec *obj_properties[PROP_TIME_PASSWORD_CHANGED + 1];
@@ -88,9 +86,6 @@ ephy_password_record_set_property (GObject      *object,
       g_free (self->password_field);
       self->password_field = g_value_dup_string (value);
       break;
-    case PROP_TIME_CREATED:
-      self->time_created = g_value_get_uint64 (value);
-      break;
     case PROP_TIME_PASSWORD_CHANGED:
       self->time_password_changed = g_value_get_uint64 (value);
       break;
@@ -126,9 +121,6 @@ ephy_password_record_get_property (GObject    *object,
       break;
     case PROP_PASSWORD_FIELD:
       g_value_set_string (value, self->password_field);
-      break;
-    case PROP_TIME_CREATED:
-      g_value_set_uint64 (value, self->time_created);
       break;
     case PROP_TIME_PASSWORD_CHANGED:
       g_value_set_uint64 (value, self->time_password_changed);
@@ -208,13 +200,6 @@ ephy_password_record_class_init (EphyPasswordRecordClass *klass)
                          NULL, NULL,
                          "Default password field",
                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
-  obj_properties[PROP_TIME_CREATED] =
-    g_param_spec_uint64 ("timeCreated",
-                         NULL, NULL,
-                         0,
-                         G_MAXUINT64,
-                         0,
-                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
   obj_properties[PROP_TIME_PASSWORD_CHANGED] =
     g_param_spec_uint64 ("timePasswordChanged",
                          NULL, NULL,
@@ -239,7 +224,6 @@ ephy_password_record_new (const char *id,
                           const char *password,
                           const char *username_field,
                           const char *password_field,
-                          guint64     time_created,
                           guint64     time_password_changed)
 {
   return EPHY_PASSWORD_RECORD (g_object_new (EPHY_TYPE_PASSWORD_RECORD,
@@ -250,7 +234,6 @@ ephy_password_record_new (const char *id,
                                              "password", password,
                                              "usernameField", username_field,
                                              "passwordField", password_field,
-                                             "timeCreated", time_created,
                                              "timePasswordChanged", time_password_changed,
                                              NULL));
 }
@@ -265,7 +248,6 @@ ephy_password_record_copy (EphyPasswordRecord *self)
                                                          self->password,
                                                          self->username_field,
                                                          self->password_field,
-                                                         self->time_created,
                                                          self->time_password_changed);
   return record;
 }
