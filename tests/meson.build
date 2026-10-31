@@ -10,6 +10,16 @@ envs = [
 test_cargs = ['-UG_DISABLE_ASSERT']
 
 if get_option('unit_tests').enabled()
+  password_record_test = executable('test-ephy-password-record',
+    'ephy-password-record-test.c',
+    dependencies: ephypasswords_dep,
+    c_args: test_cargs,
+  )
+  test('Password record test',
+    password_record_test,
+    env: envs,
+  )
+
   # FIXME: The tests that need ephy-test-utils are all disabled....
   #
   # libephytestutils = static_library('ephytestutils',
