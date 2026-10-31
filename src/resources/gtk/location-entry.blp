@@ -175,9 +175,7 @@ template $EphyLocationEntry: Box {
 
               Image {
                 pixel-size: 16;
-                gicon: bind (
-                  $get_suggestion_icon(template.item as <$EphySuggestion>.secondary-icon)
-                ) as <Gio.Icon>;
+                gicon: bind ($get_suggestion_icon(template.item as <$EphySuggestion>.secondary-icon)) as <Gio.Icon>;
 
                 layout {
                   column: "2";

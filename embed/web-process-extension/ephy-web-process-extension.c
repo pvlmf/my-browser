@@ -433,26 +433,26 @@ static void
 ephy_web_process_extension_page_created_cb (EphyWebProcessExtension *extension,
                                             WebKitWebPage           *web_page)
 {
-    WebKitWebFormManager *form_manager;
+  WebKitWebFormManager *form_manager;
 
-    g_signal_connect (web_page, "context-menu",
-                      G_CALLBACK (web_page_context_menu),
-                      extension);
+  g_signal_connect (web_page, "context-menu",
+                    G_CALLBACK (web_page_context_menu),
+                    extension);
 
-    form_manager = webkit_web_page_get_form_manager (web_page, extension->script_world);
-    g_signal_connect_object (form_manager, "will-send-submit-event",
-                             G_CALLBACK (web_page_will_submit_form),
-                             web_page, G_CONNECT_SWAPPED);
-    g_signal_connect_object (form_manager, "will-submit-form",
-                             G_CALLBACK (web_page_will_submit_form),
-                             web_page, G_CONNECT_SWAPPED);
-    g_signal_connect_object (form_manager, "form-controls-associated",
-                             G_CALLBACK (web_page_form_controls_associated),
-                             web_page, G_CONNECT_SWAPPED);
-    g_signal_connect (web_page, "user-message-received",
-                      G_CALLBACK (web_page_received_message),
-                      extension);
-  }
+  form_manager = webkit_web_page_get_form_manager (web_page, extension->script_world);
+  g_signal_connect_object (form_manager, "will-send-submit-event",
+                           G_CALLBACK (web_page_will_submit_form),
+                           web_page, G_CONNECT_SWAPPED);
+  g_signal_connect_object (form_manager, "will-submit-form",
+                           G_CALLBACK (web_page_will_submit_form),
+                           web_page, G_CONNECT_SWAPPED);
+  g_signal_connect_object (form_manager, "form-controls-associated",
+                           G_CALLBACK (web_page_form_controls_associated),
+                           web_page, G_CONNECT_SWAPPED);
+  g_signal_connect (web_page, "user-message-received",
+                    G_CALLBACK (web_page_received_message),
+                    extension);
+}
 
 static void
 drop_frame_weak_ref (gpointer key,

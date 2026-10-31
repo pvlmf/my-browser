@@ -13,7 +13,7 @@
 
 static void
 generate_random_bytes (gsize   num_bytes,
-                       guint8  *out)
+                       guint8 *out)
 {
   gssize ret;
 

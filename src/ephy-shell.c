@@ -514,7 +514,6 @@ ephy_shell_startup (GApplication *application)
                                                           "reopen-closed-tab"),
                               "enabled",
                               G_BINDING_SYNC_CREATE);
-
     }
 
     /* Actions that are disabled in app mode */
@@ -1440,7 +1439,6 @@ open_uris_data_free (OpenURIsData *data)
 static gboolean
 ephy_shell_open_uris_idle (OpenURIsData *data)
 {
-
   const char *url;
 
   EphyEmbed *embed = NULL;

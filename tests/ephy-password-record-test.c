@@ -8,7 +8,7 @@
 static void
 test_password_record_properties (void)
 {
-  static const char *const properties[] = {
+  static const char * const properties[] = {
     "id",
     "origin",
     "target-origin",
@@ -18,7 +18,7 @@ test_password_record_properties (void)
     "password-field",
     "time-password-changed"
   };
-  static const char *const removed_properties[] = {
+  static const char * const removed_properties[] = {
     "hostname",
     "formSubmitURL",
     "usernameField",
@@ -79,12 +79,12 @@ test_password_record_properties (void)
 
 int
 main (int   argc,
-      char  *argv[])
+      char *argv[])
 {
   g_test_init (&argc, &argv, NULL);
 
   g_test_add_func ("/passwords/record/properties",
-                  test_password_record_properties);
+                   test_password_record_properties);
 
   return g_test_run ();
 }

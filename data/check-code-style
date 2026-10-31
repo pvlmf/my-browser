@@ -41,16 +41,14 @@ do
   do
     "$UNCRUSTIFY" -q -c "data/uncrustify.cfg" -f "$FILE" -o "$FILE".uncrustify
     "$LINEUP_PARAMETERS" "$FILE".uncrustify > "$FILE.temp" && mv "$FILE".temp "$FILE".uncrustify
-    diff -urN "$FILE" "$FILE".uncrustify | \
-        sed -e "1s|--- |--- a/|" -e "2s|+++ |+++ b/|" >> "$patch"
+    diff -u --label "a/$FILE" --label "b/$FILE" "$FILE" "$FILE".uncrustify >> "$patch" || [ "$?" -eq 1 ]
     rm "$FILE".uncrustify
   done
   find "$DIR" -name "*.blp" ! -path "*/contrib/*" -type f -print0 | while IFS= read -r -d '' FILE;
   do
     cp "$FILE" "$FILE.temp"
     "$BLUEPRINT_COMPILER" format -f "$FILE.temp" > /dev/null || true
-    diff -urN "$FILE" "$FILE.temp" | \
-        sed -e "1s|--- |--- a/|" -e "2s|+++ |+++ b/|" >> "$patch"
+    diff -u --label "a/$FILE" --label "b/$FILE" "$FILE" "$FILE".temp >> "$patch" || [ "$?" -eq 1 ]
     rm "$FILE.temp"
   done
 done
