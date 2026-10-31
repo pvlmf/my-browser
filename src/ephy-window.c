@@ -4175,8 +4175,8 @@ on_password_save (AdwAlertDialog          *dialog,
 
   ephy_password_manager_save (password_manager, request_data->origin,
                               request_data->target_origin, request_data->username,
-                              request_data->username, request_data->password, request_data->usernameField,
-                              request_data->passwordField, request_data->isNew);
+                              request_data->username, request_data->password, request_data->username_field,
+                              request_data->password_field, request_data->is_new);
 }
 
 static void

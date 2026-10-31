@@ -389,9 +389,9 @@ web_process_extension_password_manager_save_real (EphyEmbedShell *shell,
     request_data->target_origin = g_steal_pointer (&target_origin);
     request_data->username = g_steal_pointer (&username);
     request_data->password = g_steal_pointer (&password);
-    request_data->usernameField = g_steal_pointer (&username_field);
-    request_data->passwordField = g_steal_pointer (&password_field);
-    request_data->isNew = is_new;
+    request_data->username_field = g_steal_pointer (&username_field);
+    request_data->password_field = g_steal_pointer (&password_field);
+    request_data->is_new = is_new;
     g_signal_emit (shell, signals[PASSWORD_FORM_SUBMITTED], 0, request_data);
   }
 }

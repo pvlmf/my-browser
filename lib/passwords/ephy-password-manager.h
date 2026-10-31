@@ -51,9 +51,9 @@ typedef struct {
   char *target_origin;
   char *username;
   char *password;
-  char *usernameField;
-  char *passwordField;
-  gboolean isNew;
+  char *username_field;
+  char *password_field;
+  gboolean is_new;
 } EphyPasswordRequestData;
 
 void                 ephy_password_request_data_free                (EphyPasswordRequestData *request_data);

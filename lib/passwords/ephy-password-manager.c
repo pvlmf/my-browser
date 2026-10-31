@@ -38,8 +38,8 @@ ephy_password_request_data_free (EphyPasswordRequestData *request_data)
   g_free (request_data->target_origin);
   g_free (request_data->username);
   g_free (request_data->password);
-  g_free (request_data->usernameField);
-  g_free (request_data->passwordField);
+  g_free (request_data->username_field);
+  g_free (request_data->password_field);
 
   g_free (request_data);
 }
