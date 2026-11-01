@@ -1023,6 +1023,7 @@ ephy_shell_new_tab_full (EphyShell       *shell,
   GtkWidget *web_view;
   EphyEmbed *embed = NULL;
   gboolean jump_to = FALSE;
+  gboolean pinned = FALSE;
   int position = -1;
   EphyEmbed *parent = NULL;
 
@@ -1034,6 +1035,9 @@ ephy_shell_new_tab_full (EphyShell       *shell,
 
   if (flags & EPHY_NEW_TAB_JUMP)
     jump_to = TRUE;
+
+  if (flags & EPHY_NEW_TAB_PINNED)
+    pinned = TRUE;
 
   if (!window)
     window = EPHY_WINDOW (gtk_application_get_active_window (GTK_APPLICATION (shell)));
@@ -1063,7 +1067,7 @@ ephy_shell_new_tab_full (EphyShell       *shell,
                                     "title", title,
                                     "progress-bar-enabled", ephy_embed_shell_get_mode (embed_shell) == EPHY_EMBED_SHELL_MODE_APPLICATION,
                                     NULL));
-  ephy_embed_container_add_child (EPHY_EMBED_CONTAINER (window), embed, parent, position, jump_to);
+  ephy_embed_container_add_child (EPHY_EMBED_CONTAINER (window), embed, parent, position, jump_to, pinned);
 
   if ((flags & EPHY_NEW_TAB_DONT_SHOW_WINDOW) == 0 &&
       ephy_embed_shell_get_mode (embed_shell) != EPHY_EMBED_SHELL_MODE_TEST) {
@@ -1409,10 +1413,11 @@ open_uris_data_new (EphyShell        *shell,
   fullscreen_lockdown = g_settings_get_boolean (EPHY_SETTINGS_LOCKDOWN, EPHY_PREFS_LOCKDOWN_FULLSCREEN) ||
                         ephy_embed_shell_get_mode (EPHY_EMBED_SHELL (shell)) == EPHY_EMBED_SHELL_MODE_KIOSK;
 
+  data->flags |= EPHY_NEW_TAB_JUMP;
+
   if (startup_mode == EPHY_STARTUP_NEW_WINDOW && !fullscreen_lockdown) {
     data->window = ephy_window_new ();
   } else {
-    data->flags |= EPHY_NEW_TAB_JUMP;
     data->window = EPHY_WINDOW (gtk_application_get_active_window (GTK_APPLICATION (shell)));
     data->reuse_empty_tab = TRUE;
 
@@ -1480,8 +1485,6 @@ ephy_shell_open_uris_idle (OpenURIsData *data)
 
     if (data->flags & EPHY_NEW_TAB_JUMP && mode != EPHY_EMBED_SHELL_MODE_TEST)
       gtk_window_present (GTK_WINDOW (data->window));
-
-    ephy_window_focus_location_entry (data->window);
   } else {
     ephy_web_view_load_new_tab_page (ephy_embed_get_web_view (embed));
     if (data->flags & EPHY_NEW_TAB_JUMP)

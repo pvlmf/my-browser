@@ -237,14 +237,15 @@ impl_add_child (EphyEmbedContainer *container,
                 EphyEmbed          *child,
                 EphyEmbed          *parent,
                 int                 position,
-                gboolean            jump_to)
+                gboolean            jump_to,
+                gboolean            pinned)
 {
   EphyWindow *window = EPHY_WINDOW (container);
   int ret;
 
   g_assert (!window->is_popup || ephy_tab_view_get_n_pages (window->tab_view) < 1);
 
-  ret = ephy_tab_view_add_tab (window->tab_view, child, parent, position, jump_to);
+  ret = ephy_tab_view_add_tab (window->tab_view, child, parent, position, jump_to, pinned);
 
   if (jump_to)
     ephy_window_update_entry_focus (window, ephy_embed_get_web_view (child));
@@ -3122,7 +3123,7 @@ set_permission (EphyPermissionRequestData *data,
                                              data->permission_type, data->origin,
                                              response ? EPHY_PERMISSION_PERMIT
                                                       : EPHY_PERMISSION_DENY);
-  } else if (EPHY_PERMISSION_TYPE_ACCESS_WEBCAM_AND_MICROPHONE) {
+  } else if (data->permission_type == EPHY_PERMISSION_TYPE_ACCESS_WEBCAM_AND_MICROPHONE) {
     ephy_permissions_manager_set_permission (permissions_manager,
                                              EPHY_PERMISSION_TYPE_ACCESS_WEBCAM,
                                              data->origin,

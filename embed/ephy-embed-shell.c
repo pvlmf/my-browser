@@ -1308,8 +1308,9 @@ ephy_embed_shell_register_ucm (EphyEmbedShell           *shell,
    * world priv->guid to make them unavailable to web content. If a message
    * handler needs to be temporarily accessible to web content in order to
    * implement internal Epiphany pages, register it using
-   * ephy_web_view_register_message_handler() to ensure it is unregistered
-   * before any subsequent page load.
+   * ephy_web_view_register_message_handler_for_next_load() to make it
+   * available for the next load. It will be unregistered when a subsequent
+   * load is committed.
    */
 
   webkit_user_content_manager_register_script_message_handler (ucm,

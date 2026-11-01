@@ -122,6 +122,25 @@ escape_exec_string (const char *str)
 }
 
 static char *
+quote_exec_argument (const char *argument)
+{
+  GString *quoted;
+  const char *p;
+
+  quoted = g_string_new ("\"");
+  for (p = argument; *p != '\0'; p++) {
+    if (*p == '"' || *p == '`' || *p == '$' || *p == '\\')
+      g_string_append_c (quoted, '\\');
+
+    g_string_append_c (quoted, *p);
+  }
+
+  g_string_append_c (quoted, '"');
+
+  return g_string_free_and_steal (quoted);
+}
+
+static char *
 unescape_exec_string (const char *str)
 {
   GString *unescaped;
@@ -362,6 +381,9 @@ create_desktop_file (const char  *id,
   g_autofree char *exec_string_raw = NULL;
   g_autofree char *wm_class = NULL;
   g_autofree char *desktop_entry = NULL;
+  g_autofree char *profile_arg = NULL;
+  g_autofree char *quoted_profile_arg = NULL;
+  g_autofree char *quoted_address = NULL;
   XdpPortal *portal = ephy_get_portal ();
 
   g_assert (profile_dir);
@@ -373,12 +395,16 @@ create_desktop_file (const char  *id,
     return FALSE;
   }
 
+  profile_arg = g_strconcat ("--profile=", profile_dir, NULL);
+  quoted_profile_arg = quote_exec_argument (profile_arg);
+  quoted_address = quote_exec_argument (address);
+
   file = g_key_file_new ();
-  exec_string_raw = g_strdup_printf ("epiphany --application-mode \"--profile=%s\" %s",
-                                     profile_dir,
-                                     address);
+  exec_string_raw = g_strdup_printf ("epiphany --application-mode %s %s",
+                                     quoted_profile_arg,
+                                     quoted_address);
   exec_string = escape_exec_string (exec_string_raw);
-  g_key_file_set_value (file, "Desktop Entry", "Exec", exec_string);
+  g_key_file_set_string (file, "Desktop Entry", "Exec", exec_string);
   g_key_file_set_value (file, "Desktop Entry", "StartupNotify", "true");
   g_key_file_set_value (file, "Desktop Entry", "Terminal", "false");
   g_key_file_set_value (file, "Desktop Entry", "Type", "Application");
